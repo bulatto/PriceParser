@@ -19,6 +19,9 @@ ADDITIONAL_FILES_DIR = os.path.join(BASE_DIR, 'additional_files')
 PROJECT_SETTINGS_DIR = os.getenv('PROJECT_SETTINGS_DIR', None)
 if not PROJECT_SETTINGS_DIR or not os.path.exists(PROJECT_SETTINGS_DIR):
     raise ImproperlyConfigured('Не задана переменная среды PROJECT_SETTINGS_DIR')
+LOGS_DIR = os.path.join(PROJECT_SETTINGS_DIR, 'logs')
+if not os.path.exists(LOGS_DIR):
+    os.mkdir(LOGS_DIR)
 
 
 # Quick-start development settings - unsuitable for production

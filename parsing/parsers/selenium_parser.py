@@ -8,6 +8,7 @@ from config.settings import ADDITIONAL_FILES_DIR
 
 from parsing.parsers.base_parser import PageParser
 from parsing.parsers.helpers import open_parser
+from parsing.parsers.settings import SELENIUM_VISIBLE, SELENIUM_LOGS_FILE
 from .constants import IdentifierEnum, SeleniumSettings
 from .exceptions import *
 
@@ -33,20 +34,25 @@ class SeleniumPageParser(PageParser):
         }
 
     url = None
-    invisible = False
+    visible = SELENIUM_VISIBLE
     program = SeleniumProgram.Firefox
 
     @classmethod
     def get_webdriver(cls):
         setting = cls.SeleniumProgram.settings[cls.program]
-        if cls.invisible:
+        if not cls.visible:
             driver_options = setting.option_class()
             driver_options.add_argument("--headless")
             driver_options.add_argument("--window-size=1366x768")
             driver = setting.webdriver_class(
-                executable_path=setting.path, options=driver_options)
+                executable_path=setting.path, options=driver_options,
+                service_log_path=SELENIUM_LOGS_FILE
+            )
         else:
-            driver = setting.webdriver_class(executable_path=setting.path)
+            driver = setting.webdriver_class(
+                executable_path=setting.path,
+                service_log_path=SELENIUM_LOGS_FILE
+            )
         return driver
 
     def __init__(self, url):
