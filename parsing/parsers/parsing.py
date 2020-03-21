@@ -44,12 +44,17 @@ class Parsing:
         # TODO: проверить соединение с сайтом,
         # только после этого приступать к парсингу
         # (также удостовериться, что ссылка правильная)
-        self.parser.open()
-        site = self.site_config
-        price = self.process_price(site.price_src)
-        photo_name = self.process_photo(site.photo_src)
-        self.parser.close()
-        return price, photo_name
+        try:
+            self.parser.open()
+            site = self.site_config
+            price = self.process_price(site.price_src)
+            photo_name = self.process_photo(site.photo_src)
+            self.parser.close()
+            return price, photo_name
+        except BaseParsingException as error:
+            if self.parser:
+                self.parser.close()
+            raise error
 
     def process_element(self, source):
         self.parser.reset_where_to_find()
