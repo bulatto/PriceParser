@@ -1,12 +1,22 @@
+import os
 import time
 from datetime import datetime
 
 from django.db import transaction
 
+from config.settings import BASE_DIR
 from parsing.parsers import Parsing
-from .settings import DEFAULT_IMG_PATH
+from .settings import DEFAULT_IMG_PATH, GOODS_IMAGE_PATH
 from .forms import LinkForm
 from .models import Site, RunningTask
+
+
+def relative_path(path):
+    """Вовзращает относительный путь от корневой директории проекта
+    :param path: абсолютный путь к файлу или папке
+    :return: относительный путь к файлу или папке
+    """
+    return os.path.relpath(os.path.abspath(path), BASE_DIR)
 
 
 def get_sites_and_url_form():
@@ -17,7 +27,9 @@ def get_sites_and_url_form():
         site.is_running = site.task_is_running
         site.is_actual_price = is_today_date if last_price else False
         site.price_rub = f'{last_price.price} руб.' if last_price else '-'
-        site.photo_path = site.photo_path if site.photo_path else DEFAULT_IMG_PATH
+        site.photo_path = (
+            relative_path(os.path.join(GOODS_IMAGE_PATH, site.photo_path))
+            if site.photo_path else DEFAULT_IMG_PATH)
     data = {'sites': sites, 'form': LinkForm()}
     return data
 
