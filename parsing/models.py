@@ -1,4 +1,5 @@
 import pytz
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -7,23 +8,23 @@ from django.db import models, transaction
 from parsing.constants import TASK_TIMEOUT
 
 
-class Site(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='site')
+class Product(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='product')
     url = models.URLField()
     photo_path = models.CharField(max_length=200, null=True, blank=True)
 
     def get_prices(self):
-        return Price.objects.filter(site=self).order_by('-date')
+        return self.prices.order_by('date')
 
     @property
     def last_price(self):
-        prices = self.get_prices()
-        return prices.first()
+        return self.get_prices().last()
 
     @transaction.atomic
     def add_price_and_photo(self, price, photoname):
         if price:
-            Price.add(site=self, price=price)
+            self.prices.create(price=price)
             if photoname:
                 self.photo_path = photoname
                 self.save()
@@ -36,7 +37,7 @@ class Site(models.Model):
     @classmethod
     def add_ref_link(cls, link):
         try:
-            site = Site.objects.create(
+            site = Product.objects.create(
                 user=User.objects.get(username='admin'), url=link)
             return site.id
         except Exception as e:
@@ -46,7 +47,7 @@ class Site(models.Model):
     @classmethod
     def delete_by_id(cls, id):
         try:
-            Site.objects.get(id=id).delete()
+            Product.objects.get(id=id).delete()
             return True
         except cls.DoesNotExist as e:
             print('Сайт с таким id не был найден. Удаление не выполнено.')
@@ -54,7 +55,11 @@ class Site(models.Model):
 
     @property
     def task_is_running(self):
-        return RunningTask.objects.filter(site=self).exists()
+        try:
+            if self.runningtask:
+                return True
+        except ObjectDoesNotExist:
+            return False
 
     @property
     def is_task_out_of_date(self):
@@ -70,30 +75,27 @@ class Site(models.Model):
 
 
 class Price(models.Model):
-    site = models.ForeignKey(Site, on_delete=models.CASCADE)
-    price = models.IntegerField()
-    date = models.DateTimeField()
-
-    @classmethod
-    def add(cls, site, price):
-        cls.objects.create(site=site, price=price, date=timezone.now())
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='prices')
+    price = models.FloatField()
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class RunningTask(models.Model):
     """Задача обновления данных сайта"""
-    site = models.OneToOneField(Site, on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
     start_time = models.DateTimeField(verbose_name='Время начала задачи')
 
     @classmethod
-    def create_task_for_site(cls, site):
-        cls.objects.create(site=site, start_time=timezone.now())
+    def create_task_for_product(cls, product):
+        cls.objects.create(product=product, start_time=timezone.now())
 
     @classmethod
-    def delete_task_for_site(cls, site):
+    def delete_task_for_site(cls, product):
         task = None
         try:
-            task = cls.objects.get(site=site)
+            task = cls.objects.get(product=product)
         except cls.DoesNotExist:
-            print(f'Задача для сайта с id={site.id} не была найдена!')
+            print(f'Задача для сайта с id={product.id} не была найдена!')
             return
         task.delete()

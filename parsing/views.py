@@ -27,12 +27,12 @@ def add_ref_link(request):
         return redirect('/show_goods')
 
 
-def delete_link(request, site_id):
+def delete_link(request, product_id):
     if request.method == 'POST':
-        message = delete_site(site_id)
+        message = delete_site(product_id)
         return redirect('/show_goods')
 
 
-def price_task(request, site_id):
-    run_price_task(site_id)
+def price_task(request, product_id):
+    run_price_task(product_id)
     return redirect('/show_goods')

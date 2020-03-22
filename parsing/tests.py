@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from parsing.settings import DEFAULT_IMG_PATH
 from parsing.site_config.config_parser import SiteConfigParser
-from .models import Site
+from .models import Product
 from .parsers import Parsing, PhotoDownloader
 
 
@@ -14,7 +14,7 @@ class TestParsing(TestCase):
 
     def get_one_site_from_each(self):
         """Для каждого уникального сайта в базе данных находит пи одному url"""
-        sites_list = Site.objects.values_list('id', 'url')
+        sites_list = Product.objects.values_list('id', 'url')
         # Словарь, в которому будут содержаться уникальные сайты
         self.unique_sites = dict.fromkeys(
             set(urlparse(s[1]).netloc for s in sites_list))

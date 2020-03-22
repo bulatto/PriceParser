@@ -17,21 +17,21 @@ width: 100%;
 <script>alert("{{ message }}");</script>
 {% endif %}
 
-{% if sites %}
+{% if products %}
 <table>
     <tr>
         <th>Фото</th>
         <th>Ссылка (url)</th>
         <th>Цена</th>
     </tr>
-    {% for site in sites %}
+    {% for product in products %}
     <tr>
-        <td><img style="height:40px;" src="{{site.photo_path}}""></td>
-        <td><a href="{{ site.url }}">{{ site.url }}</a></td>
-        <td>{{ site.price_rub }}</td>
+        <td><img style="height:40px;" src="{{product.photo_path}}""></td>
+        <td><a href="{{ product.url }}">{{ product.url }}</a></td>
+        <td>{{ product.price_rub }}</td>
         <td>
-            {% if not site.is_running %}
-                <form method="POST" action="price_task/{{ site.id }}/">
+            {% if not product.is_running %}
+                <form method="POST" action="price_task/{{ product.id }}/">
                     {% csrf_token %}
                     <button type="submit" class="run_task_btn">Обновить цену</button>
                 </form>
@@ -40,7 +40,7 @@ width: 100%;
             {% endif %}
         </td>
             <td>
-        <form method="POST" action="delete_link/{{site.id}}/">
+        <form method="POST" action="delete_link/{{product.id}}/">
             {% csrf_token %}
             <button type="submit" class="delete_btn">Удалить</button>
         </form>
@@ -60,15 +60,15 @@ width: 100%;
 </table>
 {% endif %}
 
-{% if sites %}
+{% if products %}
 <div id="goods_container">
-    {% for site in sites %}
-    <a href="{{site.url}}">
+    {% for product in products %}
+    <a href="{{product.url}}">
     <div class="goods">
         <div class="photo">
-            <img class="good_img" src="{{site.photo_path}}"">
+            <img class="good_img" src="{{product.photo_path}}"">
         </div>
-        <div class="description center"><b>{{site.price_rub}}</b></div>
+        <div class="description center"><b>{{product.price_rub}}</b></div>
     </div>
     </a>
     {% endfor %}

@@ -8,7 +8,7 @@ from config.settings import BASE_DIR
 from parsing.parsers import Parsing
 from .settings import DEFAULT_IMG_PATH, GOODS_IMAGE_PATH
 from .forms import LinkForm
-from .models import Site, RunningTask
+from .models import Product, RunningTask
 
 
 def relative_path(path):
@@ -20,17 +20,16 @@ def relative_path(path):
 
 
 def get_sites_and_url_form():
-    sites = Site.objects.all()
-    for site in sites:
-        last_price = site.last_price
-        site.is_running = site.task_is_running
-        site.price_rub = f'{last_price.price} руб.' if last_price else '-'
-        site.photo_path = (
-            relative_path(os.path.join(GOODS_IMAGE_PATH, site.photo_path))
-            if site.photo_path else DEFAULT_IMG_PATH)
-    data = {'sites': sites, 'form': LinkForm()}
+    products = Product.objects.all()
+    for product in products:
+        last_price = product.last_price
+        product.is_running = product.task_is_running
+        product.price_rub = f'{last_price.price} руб.' if last_price else '-'
+        product.photo_path = (
+            relative_path(os.path.join(GOODS_IMAGE_PATH, product.photo_path))
+            if product.photo_path else DEFAULT_IMG_PATH)
+    data = {'products': products, 'form': LinkForm()}
     return data
-
 
 def add_message_to_context(context, message=None):
     context['has_message'] = False if message is None else True
@@ -40,7 +39,7 @@ def add_message_to_context(context, message=None):
 
 
 def add_link(url):
-    site = Site.add_ref_link(url)
+    site = Product.add_ref_link(url)
     if site:
         message = 'Ссылка успешно добавлена!'
     else:
@@ -49,7 +48,7 @@ def add_link(url):
 
 
 def delete_site(id):
-    site = Site.delete_by_id(id)
+    site = Product.delete_by_id(id)
     if site:
         message = 'Ссылка успешно удалена!'
     else:
@@ -69,35 +68,36 @@ def calculate_time(fun):
 class SiteTaskContextManager:
     """Менеджер контекста для создания задач обновления данных сайтов
      и для вывода информации при запуске и завершении задач"""
-    def __init__(self, site):
-        self.site = site
+    def __init__(self, product):
+        self.product = product
 
     def __enter__(self):
         print('---------------------------------------------')
         print(f'Задача обновления данных сайта '
-              f'(id={self.site.id}) была запущена!')
-        RunningTask.create_task_for_site(self.site)
+              f'(id={self.product.id}) была запущена!')
+        RunningTask.create_task_for_product(self.product)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        RunningTask.delete_task_for_site(self.site)
+        RunningTask.delete_task_for_site(self.product)
         print('---------------------------------------------')
 
 
 @transaction.atomic
-def run_price_task(site_id):
+def run_price_task(product_id):
     """Запускает задачу по обновлению цены и фото для сайта"""
 
     try:
-        site = Site.objects.get(id=site_id)
-    except Site.DoesNotExist:
-        print(f'Сайт с id = {site_id} не существует!')
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        print(f'Товар с id = {product_id} не существует!')
         return
 
-    if site.task_is_running:
-        print('Задача для сайта с id = {site_id} уже запущена!')
+    if product.task_is_running:
+        print(f'Задача для обновления цены товара '
+              'с id = {product_id} уже запущена!')
         return
 
-    with SiteTaskContextManager(site=site):
-        price, photo_name = Parsing(site.url).parse_data()
+    with SiteTaskContextManager(product=product):
+        price, photo_name = Parsing(product.url).parse_data()
         print(f'Price - {price}; Photo - {photo_name}')
-        site.add_price_and_photo(price, photo_name)
+        product.add_price_and_photo(price, photo_name)
