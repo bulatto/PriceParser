@@ -23,9 +23,7 @@ def get_sites_and_url_form():
     sites = Site.objects.all()
     for site in sites:
         last_price = site.last_price
-        is_today_date = last_price.date.date() == datetime.now().date()
         site.is_running = site.task_is_running
-        site.is_actual_price = is_today_date if last_price else False
         site.price_rub = f'{last_price.price} руб.' if last_price else '-'
         site.photo_path = (
             relative_path(os.path.join(GOODS_IMAGE_PATH, site.photo_path))
