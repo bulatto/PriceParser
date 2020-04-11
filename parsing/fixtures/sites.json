@@ -72,11 +72,27 @@
     }
 },
 {
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": {
+        "app_label": "parsing",
+        "model": "runningtask"
+    }
+},
+{
     "model": "sessions.session",
     "pk": "10hq0ah9uszbs24dwwk71iwbk0wka1jh",
     "fields": {
         "session_data": "NmE3NDYwODU1Y2QxYjRjMWU1OWYwOTQ1YzM0NjBjODg0NTgyNjJlYTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkMmNlODkwZTliYmM3ZGMyYTI3YmY3MWEwMzkwNzJhNDMwNDMwOTdhIn0=",
         "expire_date": "2020-02-02T12:14:46.240Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "cjvx3chpdnldgnghw6e671vqydj8z5sl",
+    "fields": {
+        "session_data": "NmE3NDYwODU1Y2QxYjRjMWU1OWYwOTQ1YzM0NjBjODg0NTgyNjJlYTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkMmNlODkwZTliYmM3ZGMyYTI3YmY3MWEwMzkwNzJhNDMwNDMwOTdhIn0=",
+        "expire_date": "2020-03-01T06:57:14.875Z"
     }
 },
 {
@@ -176,6 +192,15 @@
         "site": 7,
         "price": 4940,
         "date": "2020-02-12T18:37:02.292Z"
+    }
+},
+{
+    "model": "parsing.price",
+    "pk": 12,
+    "fields": {
+        "site": 7,
+        "price": 4446,
+        "date": "2020-02-16T06:49:52.476Z"
     }
 },
 {
@@ -503,11 +528,47 @@
     }
 },
 {
+    "model": "auth.permission",
+    "pk": 37,
+    "fields": {
+        "name": "Can add running task",
+        "content_type": 10,
+        "codename": "add_runningtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 38,
+    "fields": {
+        "name": "Can change running task",
+        "content_type": 10,
+        "codename": "change_runningtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+        "name": "Can delete running task",
+        "content_type": 10,
+        "codename": "delete_runningtask"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+        "name": "Can view running task",
+        "content_type": 10,
+        "codename": "view_runningtask"
+    }
+},
+{
     "model": "auth.user",
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$180000$MiRhBOF3U8QU$oXFYAY6hw9t6mSXgEoaG5tAbeSkx20ZLWRhYGsjY8v0=$",
-        "last_login": "2020-01-19T12:14:46.221Z",
+        "last_login": "2020-02-16T06:57:14.856Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
@@ -526,8 +587,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.wildberries.ru/catalog/8661404/detail.aspx?targetUrl=GP",
-        "photo_path": "static/goods_images/img_239035.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_239035.jpg"
     }
 },
 {
@@ -536,8 +596,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.lamoda.ru/p/re160ameeac8/shoes-reebok-krossovki/?source_rec_type=similar",
-        "photo_path": "static/goods_images/img_550428.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_550428.jpg"
     }
 },
 {
@@ -546,8 +605,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.lamoda.ru/p/re160ameeae8/shoes-reebok-krossovki/?source_rec_type=similar",
-        "photo_path": "static/goods_images/img_167122.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_167122.jpg"
     }
 },
 {
@@ -556,8 +614,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.lamoda.ru/p/re160ameeae7/shoes-reebok-krossovki/?source_rec_type=similar",
-        "photo_path": "static/goods_images/img_269647.jpg",
-        "is_running": false
+        "photo_path": "C:\\Projects\\PriceParser\\static\\goods_images\\img_968881.jpg"
     }
 },
 {
@@ -566,8 +623,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.lamoda.ru/p/re160ameeac8/shoes-reebok-krossovki/?source_rec_type=similar",
-        "photo_path": "static/goods_images/img_468076.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_468076.jpg"
     }
 },
 {
@@ -576,8 +632,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.wildberries.ru/catalog/8661404/detail.aspx?targetUrl=GP",
-        "photo_path": "static/goods_images/img_790976.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_790976.jpg"
     }
 },
 {
@@ -586,8 +641,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.wildberries.ru/catalog/7345877/detail.aspx?targetUrl=NW",
-        "photo_path": "static/goods_images/img_639204.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_639204.jpg"
     }
 },
 {
@@ -596,8 +650,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.wildberries.ru/catalog/8187200/detail.aspx?targetUrl=GP",
-        "photo_path": "static/goods_images/img_473646.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_473646.jpg"
     }
 },
 {
@@ -606,8 +659,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.wildberries.ru/catalog/8715123/detail.aspx?targetUrl=SG",
-        "photo_path": "static/goods_images/img_318199.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/img_318199.jpg"
     }
 },
 {
@@ -616,8 +668,7 @@
     "fields": {
         "user": 1,
         "url": "https://www.wildberries.ru/catalog/6493635/detail.aspx?targetUrl=SG",
-        "photo_path": "static/goods_images/default.jpg",
-        "is_running": false
+        "photo_path": "static/goods_images/default.jpg"
     }
 },
 {
@@ -629,6 +680,32 @@
         "content_type": 8,
         "object_id": "1",
         "object_repr": "Site object (1)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Is running\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2020-02-16T06:57:36.611Z",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "1",
+        "object_repr": "Site object (1)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Is running\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2020-02-16T06:57:43.153Z",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "2",
+        "object_repr": "Site object (2)",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"Is running\"]}}]"
     }

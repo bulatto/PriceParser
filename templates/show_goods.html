@@ -31,14 +31,10 @@ width: 100%;
         <td>{{ site.price_rub }}</td>
         <td>
             {% if not site.is_running %}
-                {% if site.is_actual_price %}
-                Актуальная цена
-                {% else %}
-                <form method="POST" action="run_price_task/{{ site.id }}/">
+                <form method="POST" action="price_task/{{ site.id }}/">
                     {% csrf_token %}
                     <button type="submit" class="run_task_btn">Обновить цену</button>
                 </form>
-                {% endif %}
             {% else %}
             Задача запущена
             {% endif %}

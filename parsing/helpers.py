@@ -1,19 +1,33 @@
+import os
 import time
 from datetime import datetime
 
-from .constants import DEFAULT_IMG_PATH
+from django.db import transaction
+
+from config.settings import BASE_DIR
+from parsing.parsers import Parsing
+from .settings import DEFAULT_IMG_PATH, GOODS_IMAGE_PATH
 from .forms import LinkForm
-from .models import Site
-from .parsers import Parsing
+from .models import Site, RunningTask
+
+
+def relative_path(path):
+    """Вовзращает относительный путь от корневой директории проекта
+    :param path: абсолютный путь к файлу или папке
+    :return: относительный путь к файлу или папке
+    """
+    return os.path.relpath(os.path.abspath(path), BASE_DIR)
 
 
 def get_sites_and_url_form():
     sites = Site.objects.all()
     for site in sites:
         last_price = site.last_price
-        site.is_actual_price = datetime.date(last_price.date) == datetime.date(datetime.now()) if last_price else False
+        site.is_running = site.task_is_running
         site.price_rub = f'{last_price.price} руб.' if last_price else '-'
-        site.photo_path = site.photo_path if site.photo_path else DEFAULT_IMG_PATH
+        site.photo_path = (
+            relative_path(os.path.join(GOODS_IMAGE_PATH, site.photo_path))
+            if site.photo_path else DEFAULT_IMG_PATH)
     data = {'sites': sites, 'form': LinkForm()}
     return data
 
@@ -52,23 +66,38 @@ def calculate_time(fun):
     return calculate
 
 
-def price_task(site_id):
+class SiteTaskContextManager:
+    """Менеджер контекста для создания задач обновления данных сайтов
+     и для вывода информации при запуске и завершении задач"""
+    def __init__(self, site):
+        self.site = site
+
+    def __enter__(self):
+        print('---------------------------------------------')
+        print(f'Задача обновления данных сайта '
+              f'(id={self.site.id}) была запущена!')
+        RunningTask.create_task_for_site(self.site)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        RunningTask.delete_task_for_site(self.site)
+        print('---------------------------------------------')
+
+
+@transaction.atomic
+def run_price_task(site_id):
+    """Запускает задачу по обновлению цены и фото для сайта"""
+
     try:
         site = Site.objects.get(id=site_id)
     except Site.DoesNotExist:
         print(f'Сайт с id = {site_id} не существует!')
         return
-    if site.is_running:
-        print('Задача уже запущена!')
+
+    if site.task_is_running:
+        print('Задача для сайта с id = {site_id} уже запущена!')
         return
-    print('---------------------------------------------')
-    print(f'Задача обновления данных сайта (id={site_id}) была запущена!')
-    Site.objects.filter(id=site_id).update(is_running=True)
-    try:
+
+    with SiteTaskContextManager(site=site):
         price, photo_name = Parsing(site.url).parse_data()
+        print(f'Price - {price}; Photo - {photo_name}')
         site.add_price_and_photo(price, photo_name)
-    except Exception as e:
-        print(f'Произошла ошибка при обновлении данных сайта (id={site_id}). {e}')
-    finally:
-        Site.objects.filter(id=site_id).update(is_running=False)
-        print('---------------------------------------------')

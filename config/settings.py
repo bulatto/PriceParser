@@ -11,10 +11,17 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ADDITIONAL_FILES_DIR = os.path.join(BASE_DIR, 'additional_files')
+PROJECT_SETTINGS_DIR = os.getenv('PROJECT_SETTINGS_DIR', None)
+if not PROJECT_SETTINGS_DIR or not os.path.exists(PROJECT_SETTINGS_DIR):
+    raise ImproperlyConfigured('Не задана переменная среды PROJECT_SETTINGS_DIR')
+LOGS_DIR = os.path.join(PROJECT_SETTINGS_DIR, 'logs')
+if not os.path.exists(LOGS_DIR):
+    os.mkdir(LOGS_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -79,7 +86,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(ADDITIONAL_FILES_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(PROJECT_SETTINGS_DIR, 'db.sqlite3'),
     }
 }
 
@@ -111,7 +118,7 @@ LANGUAGES = [
     ('ru-RU', 'Russian'),
 ]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -128,6 +135,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-# Настройки для parsing
-GOODS_IMAGE_PATH = os.path.join(BASE_DIR, "static", 'goods_images')

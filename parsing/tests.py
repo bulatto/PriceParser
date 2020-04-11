@@ -2,7 +2,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from urllib.parse import urlparse
 
-from parsing.constants import DEFAULT_IMG_PATH
+from parsing.settings import DEFAULT_IMG_PATH
+from parsing.site_config.config_parser import SiteConfigParser
 from .models import Site
 from .parsers import Parsing, PhotoDownloader
 
@@ -52,16 +53,41 @@ class TestPhotoDownloader(TestCase):
     )
 
     def test_correct_url(self):
-        success, photo = PhotoDownloader(self.image_urls['correct']).download()
+        success, photo, _ = PhotoDownloader(self.image_urls['correct']).download()
         self.assertTrue(success)
         self.assertNotEqual(photo, DEFAULT_IMG_PATH)
 
     def test_wrong_url(self):
-        success, photo = PhotoDownloader(self.image_urls['wrong']).download()
+        success, photo, _ = PhotoDownloader(self.image_urls['wrong']).download()
         self.assertFalse(success)
         self.assertEqual(photo, DEFAULT_IMG_PATH)
 
     def test_empty_url(self):
-        success, photo = PhotoDownloader('').download()
+        success, photo, _ = PhotoDownloader('').download()
         self.assertFalse(success)
         self.assertEqual(photo, DEFAULT_IMG_PATH)
+
+
+class TestCheckParentheses(TestCase):
+    strings = dict(
+        correct_strings=[
+            '()[]([])',
+            '[[[[]]]]',
+            '[124[43[43(gsdg)]]gd]'
+        ],
+        wrong_strings=[
+            '()[](])',
+            '[[[[]])]',
+            '[124[43[43(gsdg)]]gd)'
+        ]
+    )
+
+    def test_check_correct_parentheses(self):
+        for string in self.strings['correct_strings']:
+            self.assertTrue(
+                SiteConfigParser.check_parentheses_in_string(string))
+
+    def test_check_wrong_parentheses(self):
+        for string in self.strings['wrong_strings']:
+            self.assertFalse(
+                SiteConfigParser.check_parentheses_in_string(string))

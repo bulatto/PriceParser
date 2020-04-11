@@ -3,5 +3,7 @@
 __pycache__
 *.py[cod]
 
+/config/site_config.txt
 /static/goods_images/
 /reserve/
+/price_parser/site_config.txt

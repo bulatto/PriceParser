@@ -1,7 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .helpers import add_message_to_context, get_sites_and_url_form, add_link, delete_site, price_task
+from .helpers import (add_message_to_context, get_sites_and_url_form,
+                      add_link, delete_site, run_price_task)
 from . import forms
 
 
@@ -31,6 +32,7 @@ def delete_link(request, site_id):
         message = delete_site(site_id)
         return redirect('/show_goods')
 
-def run_price_task(request, site_id):
-    price_task(site_id)
+
+def price_task(request, site_id):
+    run_price_task(site_id)
     return redirect('/show_goods')
