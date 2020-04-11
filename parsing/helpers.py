@@ -8,7 +8,7 @@ from config.settings import BASE_DIR
 from parsing.parsers import Parsing
 from .settings import DEFAULT_IMG_PATH, GOODS_IMAGE_PATH
 from .forms import LinkForm
-from .models import Product, RunningTask
+from .models import RunningTask
 
 
 def relative_path(path):
