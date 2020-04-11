@@ -9,7 +9,7 @@ class Product(models.Model):
     photo_path = models.CharField(max_length=200, null=True, blank=True)
 
     def get_prices(self):
-        return self.prices.order_by('date')
+        return self.prices.order_by('created')
 
     @property
     def last_price(self):

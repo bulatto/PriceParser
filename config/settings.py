@@ -15,13 +15,23 @@ from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 ADDITIONAL_FILES_DIR = os.path.join(BASE_DIR, 'additional_files')
+# Путь до папки с основными файлами проекта
 PROJECT_SETTINGS_DIR = os.getenv('PROJECT_SETTINGS_DIR', None)
 if not PROJECT_SETTINGS_DIR or not os.path.exists(PROJECT_SETTINGS_DIR):
     raise ImproperlyConfigured('Не задана переменная среды PROJECT_SETTINGS_DIR')
+
+# Путь до папки с логами
 LOGS_DIR = os.path.join(PROJECT_SETTINGS_DIR, 'logs')
 if not os.path.exists(LOGS_DIR):
     os.mkdir(LOGS_DIR)
+
+# Расположение изображений товаров
+GOODS_IMAGE_PATH = os.path.join(BASE_DIR, "static", 'goods_images')
+if not os.path.exists(GOODS_IMAGE_PATH):
+    os.mkdir(GOODS_IMAGE_PATH)
+DEFAULT_IMG_NAME = os.path.join(GOODS_IMAGE_PATH, 'default.jpg')
 
 
 # Quick-start development settings - unsuitable for production

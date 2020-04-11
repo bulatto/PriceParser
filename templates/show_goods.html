@@ -28,7 +28,7 @@ width: 100%;
     <tr>
         <td><img style="height:40px;" src="{{product.photo_path}}""></td>
         <td><a href="{{ product.url }}">{{ product.url }}</a></td>
-        <td>{{ product.price_rub }}</td>
+        <td>{{ product.price_in_rub }}</td>
         <td>
             {% if not product.is_running %}
                 <form method="POST" action="price_task/{{ product.id }}/">
@@ -68,7 +68,7 @@ width: 100%;
         <div class="photo">
             <img class="good_img" src="{{product.photo_path}}"">
         </div>
-        <div class="description center"><b>{{product.price_rub}}</b></div>
+        <div class="description center"><b>{{product.price_in_rub}}</b></div>
     </div>
     </a>
     {% endfor %}

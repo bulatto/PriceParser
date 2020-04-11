@@ -35,7 +35,7 @@ class SeleniumPageParser(PageParser):
 
     url = None
     visible = SELENIUM_VISIBLE
-    program = SeleniumProgram.Firefox
+    program = SeleniumProgram.Chrome
 
     @classmethod
     def get_webdriver(cls):

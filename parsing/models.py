@@ -19,15 +19,10 @@ class RunningTask(models.Model):
         verbose_name='Время завершения задачи')
 
     @classmethod
-    def create_task_for_product(cls, product):
-        cls.objects.create(product=product, start_time=timezone.now())
+    def has_active_task(cls, product):
+        return cls.objects.filter(product=product, is_active=True).exists()
 
     @classmethod
-    def delete_task_for_site(cls, product):
-        task = None
-        try:
-            task = cls.objects.get(product=product)
-        except cls.DoesNotExist:
-            print(f'Задача для сайта с id={product.id} не была найдена!')
-            return
-        task.delete()
+    def close_task_for_site(cls, product):
+        cls.objects.filter(product=product, is_active=True).update(
+            is_active=False, end_time=timezone.now())
