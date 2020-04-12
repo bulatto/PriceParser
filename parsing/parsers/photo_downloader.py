@@ -3,7 +3,7 @@ import random
 import requests
 from urllib.parse import urlparse
 
-from parsing.settings import GOODS_IMAGE_PATH
+from config.settings import GOODS_IMAGE_PATH
 from .exceptions import (
     UnsupportedFileFormat, FileNotDownloaded, PhotoDownloaderException)
 

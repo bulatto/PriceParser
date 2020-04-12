@@ -51,7 +51,7 @@
     "model": "contenttypes.contenttype",
     "pk": 7,
     "fields": {
-        "app_label": "parsing",
+        "app_label": "product",
         "model": "baseurl"
     }
 },
@@ -59,7 +59,7 @@
     "model": "contenttypes.contenttype",
     "pk": 8,
     "fields": {
-        "app_label": "parsing",
+        "app_label": "product",
         "model": "site"
     }
 },
@@ -75,7 +75,7 @@
     "model": "contenttypes.contenttype",
     "pk": 10,
     "fields": {
-        "app_label": "parsing",
+        "app_label": "product",
         "model": "runningtask"
     }
 },
@@ -96,7 +96,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 1,
     "fields": {
         "site": 2,
@@ -105,7 +105,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 2,
     "fields": {
         "site": 1,
@@ -114,7 +114,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 3,
     "fields": {
         "site": 6,
@@ -123,7 +123,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 4,
     "fields": {
         "site": 7,
@@ -132,7 +132,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 5,
     "fields": {
         "site": 8,
@@ -141,7 +141,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 6,
     "fields": {
         "site": 9,
@@ -150,7 +150,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 7,
     "fields": {
         "site": 10,
@@ -159,7 +159,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 8,
     "fields": {
         "site": 11,
@@ -168,7 +168,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 9,
     "fields": {
         "site": 13,
@@ -177,7 +177,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 10,
     "fields": {
         "site": 12,
@@ -186,7 +186,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 11,
     "fields": {
         "site": 7,
@@ -195,7 +195,7 @@
     }
 },
 {
-    "model": "parsing.price",
+    "model": "product.price",
     "pk": 12,
     "fields": {
         "site": 7,
@@ -582,7 +582,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 1,
     "fields": {
         "user": 1,
@@ -591,7 +591,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 2,
     "fields": {
         "user": 1,
@@ -600,7 +600,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 6,
     "fields": {
         "user": 1,
@@ -609,7 +609,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 7,
     "fields": {
         "user": 1,
@@ -618,7 +618,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 8,
     "fields": {
         "user": 1,
@@ -627,7 +627,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 9,
     "fields": {
         "user": 1,
@@ -636,7 +636,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 10,
     "fields": {
         "user": 1,
@@ -645,7 +645,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 11,
     "fields": {
         "user": 1,
@@ -654,7 +654,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 12,
     "fields": {
         "user": 1,
@@ -663,7 +663,7 @@
     }
 },
 {
-    "model": "parsing.site",
+    "model": "product.site",
     "pk": 13,
     "fields": {
         "user": 1,

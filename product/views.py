@@ -1,0 +1,27 @@
+from django.shortcuts import render, redirect
+
+from .forms import LinkForm
+from .helpers import get_sites_and_url_form, add_link, delete_site
+
+
+def show_goods(request, *args, **kwargs):
+    data = get_sites_and_url_form()
+    return render(request, 'show_goods.html', context=data)
+
+
+def add_ref(request):
+    data = {'form': LinkForm()}
+    return render(request, 'add_ref.html', context=data)
+
+
+def add_ref_link(request):
+    if request.method == 'POST':
+        url = request.POST.get('url')
+        message = add_link(url)
+        return redirect('/show_goods')
+
+
+def delete_link(request, product_id):
+    if request.method == 'POST':
+        message = delete_site(product_id)
+        return redirect('/show_goods')

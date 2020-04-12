@@ -2,19 +2,18 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from urllib.parse import urlparse
 
-from parsing.settings import DEFAULT_IMG_PATH
+from config.settings import DEFAULT_IMG_NAME
 from parsing.site_config.config_parser import SiteConfigParser
-from .models import Site
+from .models import Product
 from .parsers import Parsing, PhotoDownloader
 
 
-# Create your tests here.
 class TestParsing(TestCase):
     fixtures = ['sites.json']
 
     def get_one_site_from_each(self):
         """Для каждого уникального сайта в базе данных находит пи одному url"""
-        sites_list = Site.objects.values_list('id', 'url')
+        sites_list = Product.objects.values_list('id', 'url')
         # Словарь, в которому будут содержаться уникальные сайты
         self.unique_sites = dict.fromkeys(
             set(urlparse(s[1]).netloc for s in sites_list))
@@ -55,17 +54,17 @@ class TestPhotoDownloader(TestCase):
     def test_correct_url(self):
         success, photo, _ = PhotoDownloader(self.image_urls['correct']).download()
         self.assertTrue(success)
-        self.assertNotEqual(photo, DEFAULT_IMG_PATH)
+        self.assertNotEqual(photo, DEFAULT_IMG_NAME)
 
     def test_wrong_url(self):
         success, photo, _ = PhotoDownloader(self.image_urls['wrong']).download()
         self.assertFalse(success)
-        self.assertEqual(photo, DEFAULT_IMG_PATH)
+        self.assertEqual(photo, DEFAULT_IMG_NAME)
 
     def test_empty_url(self):
         success, photo, _ = PhotoDownloader('').download()
         self.assertFalse(success)
-        self.assertEqual(photo, DEFAULT_IMG_PATH)
+        self.assertEqual(photo, DEFAULT_IMG_NAME)
 
 
 class TestCheckParentheses(TestCase):
