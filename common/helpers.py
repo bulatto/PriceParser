@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from config.settings import BASE_DIR
 
@@ -15,3 +16,11 @@ def check_or_create_dir(directory):
     """Если директория не существует, то она создаётся"""
     if not os.path.exists(directory):
         os.mkdir(directory)
+
+
+def get_datetime_string(datetime_object):
+    """Возвращает строковое представление даты и времени"""
+    if isinstance(datetime_object, datetime.datetime):
+        return datetime_object.strftime("%d.%m.%Y %H:%M:%S")
+    elif isinstance(datetime_object, datetime.date):
+        return datetime_object.strftime("%d.%m.%Y")

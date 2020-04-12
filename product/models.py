@@ -1,12 +1,22 @@
 from django.contrib.auth.models import User
 from django.db import models, transaction
-
+from common.helpers import get_datetime_string
 
 class Product(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='product')
-    url = models.URLField()
-    photo_path = models.CharField(max_length=200, null=True, blank=True)
+        User, on_delete=models.CASCADE, related_name='product',
+        verbose_name='Пользователь')
+    url = models.URLField(verbose_name='Ссылка на товар')
+    photo_path = models.CharField(
+        max_length=200, null=True, blank=True,
+        verbose_name='Изображение товара')
+
+    def __str__(self):
+        return self.url
+
+    class Meta:
+        verbose_name = 'Товар'
+        verbose_name_plural = 'Товары'
 
     def get_prices(self):
         return self.prices.order_by('created')
@@ -50,6 +60,16 @@ class Product(models.Model):
 
 class Price(models.Model):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='prices')
-    price = models.FloatField()
-    created = models.DateTimeField(auto_now_add=True)
+        Product, on_delete=models.CASCADE, related_name='prices',
+        verbose_name='Ссылка на товар')
+    price = models.FloatField(verbose_name='Цена')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
+
+    def __str__(self):
+        return (f'Цена на товар(id={str(self.product.id)}, '
+                f'дата={get_datetime_string(self.created)}) = '
+                f'{self.price} руб.')
+
+    class Meta:
+        verbose_name = 'Цена'
+        verbose_name_plural = 'Цены'
