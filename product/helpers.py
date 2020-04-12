@@ -2,7 +2,7 @@ import os
 
 from common.helpers import relative_path
 from parsing.models import RunningTask
-from product.forms import LinkForm
+from product.forms import UrlForm
 from config.settings import GOODS_IMAGE_PATH, DEFAULT_IMG_NAME
 from product.models import Product
 
@@ -28,12 +28,12 @@ def get_sites_and_url_form():
         product.is_running = RunningTask.has_active_task(product)
         product.price_in_rub = f'{last_price.price} руб.' if last_price else '-'
         product.photo_path = get_photo_path(product.photo_path)
-    data = {'products': products, 'form': LinkForm()}
+    data = {'products': products, 'form': UrlForm()}
     return data
 
 
-def add_link(url):
-    site = Product.add_ref_link(url)
+def add_url(url):
+    site = Product.create_product(url)
     if site:
         message = 'Ссылка успешно добавлена!'
     else:

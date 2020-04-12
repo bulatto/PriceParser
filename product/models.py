@@ -39,14 +39,9 @@ class Product(models.Model):
             return False
 
     @classmethod
-    def add_ref_link(cls, link):
-        try:
-            site = Product.objects.create(
-                user=User.objects.get(username='admin'), url=link)
-            return site.id
-        except Exception as e:
-            print('Добавление ссылки не удалось.' + str(e))
-            return None
+    def create_product(cls, url):
+        return Product.objects.create(
+            user=User.objects.get(username='admin'), url=url)
 
     @classmethod
     def delete_by_id(cls, id):
