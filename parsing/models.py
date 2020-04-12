@@ -23,6 +23,9 @@ class RunningTask(models.Model):
         return cls.objects.filter(product=product, is_active=True).exists()
 
     @classmethod
-    def close_task_for_site(cls, product):
-        cls.objects.filter(product=product, is_active=True).update(
-            is_active=False, end_time=timezone.now())
+    def close_task_by_id(cls, id):
+        try:
+            cls.objects.filter(id=id).update(
+                is_active=False, end_time=timezone.now())
+        except cls.DoesNotExist:
+            pass
