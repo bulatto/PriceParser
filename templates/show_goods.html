@@ -26,12 +26,12 @@ width: 100%;
     </tr>
     {% for product in products %}
     <tr>
-        <td><img style="height:40px;" src="{{product.photo_path}}""></td>
+        <td><img style="height:40px;" src="{% static product.photo_path %}"></td>
         <td><a href="{{ product.url }}">{{ product.url }}</a></td>
         <td>{{ product.price_in_rub }}</td>
         <td>
             {% if not product.has_running_task %}
-                <form method="POST" action="price_task/{{ product.id }}/">
+                <form method="POST" action="{% url 'parsing:price_task' product.id %}">
                     {% csrf_token %}
                     <button type="submit" class="run_task_btn">Обновить цену</button>
                 </form>
@@ -40,7 +40,7 @@ width: 100%;
             {% endif %}
         </td>
             <td>
-        <form method="POST" action="delete_link/{{product.id}}/">
+        <form method="POST" action="{% url 'product:delete_product' product.id %}">
             {% csrf_token %}
             <button type="submit" class="delete_btn">Удалить</button>
         </form>
@@ -48,7 +48,7 @@ width: 100%;
     </tr>
     {% endfor %}
 
-    <form method="POST" action="add_ref_link">
+    <form method="POST" action="{% url 'product:add_product_url' %}">
         {% csrf_token %}
         <tr>
             <td colspan="2">{{ form.url }}</td>
@@ -66,7 +66,7 @@ width: 100%;
     <a href="{{product.url}}">
     <div class="goods">
         <div class="photo">
-            <img class="good_img" src="{{product.photo_path}}"">
+            <img class="good_img" src="{% static product.photo_path %}">
         </div>
         <div class="description center"><b>{{product.price_in_rub}}</b></div>
     </div>
@@ -74,6 +74,6 @@ width: 100%;
     {% endfor %}
 </div>
 {% endif %}
-<div><p class="center"><a href="/">Вернуться на главную страницу</a></p></div>
+<div><p class="center"><a href="{% url 'index' %}">Вернуться на главную страницу</a></p></div>
 </body>
 </html>

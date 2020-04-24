@@ -8,8 +8,8 @@
 </head>
 <body>
 <div class="container">
-    <div id="add_ref"><a id="a_add_ref" href="/add_ref">Добавить ссылки</a></div>
-    <div id="goods"><a id="a_goods" href="/show_goods">Просмотр товаров</a></div>
+    <div id="add_ref"><a id="a_add_ref" href="{% url 'product:add_ref' %}">Добавить ссылки</a></div>
+    <div id="goods"><a id="a_goods" href="{% url 'product:show_goods' %}">Просмотр товаров</a></div>
 </div>
 </body>
 </html>

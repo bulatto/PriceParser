@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Добавление ссылок на сайты</h1>
-<form method="POST" action="add_ref_link">
+<form method="POST" action="{% url 'product:add_product_url' %}">
     {% csrf_token %}
     <p>{{ form }}</p>
     <p><button type="submit" class="btn">Добавить</button></p>

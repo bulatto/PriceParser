@@ -14,17 +14,17 @@ GOODS_ON_PAGE = 30
 
 
 def get_photo_path(photo_name=None):
-    """Возвращает путь от корня проекта до картинки, если задано корректное
+    """Возвращает путь из папки со статикой до картинки, если задано корректное
     название файла и файл существует. Иначе выдаст путь до картинки по умолчанию
     :param photo_name: Название файла картинки
-    :return: Путь от корня проекта до картинки
+    :return: Путь от папки со статикой до картинки
     """
-    full_path = None
-    if photo_name:
-        full_path = os.path.join(GOODS_IMAGE_PATH, photo_name)
-    if not full_path or not os.path.exists(full_path):
-        full_path = os.path.join(GOODS_IMAGE_PATH, DEFAULT_IMG_NAME)
-    return relative_path(full_path)
+    prefix = os.path.split(GOODS_IMAGE_PATH)[-1]
+    not_exists = photo_name and not os.path.exists(
+        os.path.join(GOODS_IMAGE_PATH, photo_name))
+    if not photo_name or not_exists:
+        photo_name = DEFAULT_IMG_NAME
+    return f'{prefix}/{photo_name}'
 
 
 def get_sites_and_url_form(page=1):

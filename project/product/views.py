@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse
 
 from .forms import UrlForm
 from .helpers import add_url
@@ -21,10 +22,10 @@ def add_product(request):
     if request.method == 'POST':
         url = request.POST.get('url')
         message = add_url(url)
-        return redirect('/show_goods')
+        return redirect(reverse('product:show_goods'))
 
 
 def delete_product(request, product_id):
     if request.method == 'POST':
         message = delete_site(product_id)
-        return redirect('/show_goods')
+        return redirect(reverse('product:show_goods'))
