@@ -68,5 +68,3 @@ class PageParserEnum(BaseEnumerate):
 
 
 TypeAndId = namedtuple('TypeAndId', ['type', 'id'])
-SeleniumSettings = namedtuple(
-    'SeleniumSettings', ['webdriver_class', 'option_class', 'path'])

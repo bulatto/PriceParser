@@ -38,7 +38,7 @@ class PageParser(metaclass=ABCMeta):
 
     @abstractmethod
     def open(self):
-        pass
+        print(f'Открытие сайта {self.url}')
 
     @abstractmethod
     def get_element_on_page(self, elem_src):
@@ -48,4 +48,4 @@ class PageParser(metaclass=ABCMeta):
         pass
 
     def close(self):
-        pass
+        print('Закрытие сайта')
