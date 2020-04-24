@@ -1,5 +1,4 @@
-from parsing.site_config.config_parser import (
-    ConfigParseHelper, SiteConfigParser)
+from parsing.site_config.config_parser import SiteConfigParser
 from .settings import SITE_CONFIG_PATH
 
 

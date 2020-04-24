@@ -3,9 +3,11 @@ from configparser import ConfigParser
 from django.core.exceptions import ImproperlyConfigured
 
 from parsing.parsers.constants import IdentifierEnum, TypeAndId, PageParserEnum
+from parsing.parsers.helpers import get_identifier
 
 
 class SiteConfig:
+    """Класс для хранения конфигураций сайтов"""
     def __init__(self, name, base_url, parser_type, price_src, photo_src):
         self.name = name
         self.base_url = base_url
@@ -14,11 +16,11 @@ class SiteConfig:
         self.photo_src = photo_src
 
 
-class ConfigParseHelper:
-    """Класс-помощник для парсера файла конфигурации.
-    Содержит полезные словари, параметры и функции для парсинга
-    """
+class SiteConfigParser(ConfigParser):
+    """Обертка над ConfigParser для работы с параметрами сайтов"""
 
+    # Прочитан ли файл
+    is_file_readed = False
     # Обязательные поля для каждого сайта
     required_fields = (
         'BASE_URL',
@@ -26,63 +28,17 @@ class ConfigParseHelper:
         'PRICE_PATH',
         'PHOTO_PATH'
     )
-
-    # Словарь для перевода идентификаторов из текста
-    str_to_identifier = {
-        'ID': IdentifierEnum.id,
-        'CLASS': IdentifierEnum.class_,
-        'XPATH': IdentifierEnum.xpath,
-        'TAG': IdentifierEnum.tag,
-        'ATTRIBUTE': IdentifierEnum.attr,
-        'TEXT': IdentifierEnum.text,
-        'NUM': IdentifierEnum.num,
-    }
-
     # Идентификаторы, для которых не нужны параметры (в строковом виде)
     no_need_for_param = ['TEXT']
 
-    @classmethod
-    def get_parser_type(cls, string):
-        """Возвращает id парсера
-        :param string: Строка с названием парсера
-        :return: id парсера
-        :raise: ImproperlyConfigured
-        """
-        for name, parser_id in PageParserEnum.values.items():
-            if name.upper() == string.upper():
-                return parser_id
-        raise ImproperlyConfigured(f'Указан некорректный тип парсера {string}')
-
-    @classmethod
-    def get_identifier(cls, string):
-        """Находит идентификатор в начале строки или генерирует ошибку
-        :param string: Строка с идентификатором и параметром функции
-        :type string: str
-        :raise: ImproperlyConfigured
-        """
-        assert string, "Строка пуста!"
-
-        for key, value in cls.str_to_identifier.items():
-            if string.startswith(key):
-                return key, value
-        raise ImproperlyConfigured(
-            f'Идентификатор не был найден в начале строки "{string}"')
-
-
-class SiteConfigParser(ConfigParser):
-    """Обертка над ConfigParser для работы с параметрами сайтов"""
-
-    # Параметр, прочитан ли файл
-    is_file_readed = False
-
     def check_required_fields(self):
         """Проверка наличия всех необходимых полей
-        :raise: ImproperlyConfigured"""
-
+        :raise: ImproperlyConfigured
+        """
         error_message = ('Обязательный параметр {0} отсутствует '
                          'в секции {1} конфигурации')
         for section in self.sections():
-            for field in ConfigParseHelper.required_fields:
+            for field in self.required_fields:
                 if field not in self[section].keys():
                     raise ImproperlyConfigured(
                         error_message.format(field, section))
@@ -160,12 +116,12 @@ class SiteConfigParser(ConfigParser):
                 f'Некорректная конфигурация сайта!')
 
         # Получение идентификатора, с которого начинается строка
-        key, identifier = ConfigParseHelper.get_identifier(element)
+        key, identifier = get_identifier(element)
         # Обрезание строки (удаление идентификатора)
         element = element[len(key):]
 
         # Проверка необходимости параметров
-        if key in ConfigParseHelper.no_need_for_param:
+        if key in cls.no_need_for_param:
             if len(element) > 0:
                 raise ImproperlyConfigured(
                     f'Посторонние символы после идентификатора {key}')
@@ -221,7 +177,7 @@ class SiteConfigParser(ConfigParser):
             config = SiteConfig(
                 name=section,
                 base_url=site['BASE_URL'],
-                parser_type=ConfigParseHelper.get_parser_type(
+                parser_type=PageParserEnum.get_parser_type(
                     site['PARSER_TYPE']),
                 price_src=self.process_path_to_element(site['PRICE_PATH']),
                 photo_src=self.process_path_to_element(site['PHOTO_PATH'])
