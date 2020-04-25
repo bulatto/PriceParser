@@ -31,3 +31,16 @@ def get_identifier(string):
             return key, value
     raise ImproperlyConfigured(
         f'Идентификатор не был найден в начале строки "{string}"')
+
+
+def get_num_of_list(elem_list, num):
+    """Возвращается num-ый по счёту элемент массива"""
+    assert isinstance(elem_list, list)
+
+    if 0 <= num <= len(elem_list):
+        try:
+            return elem_list[num]
+        except IndexError as e:
+            print('Индекс вышел за границы массива!')
+
+    return None
