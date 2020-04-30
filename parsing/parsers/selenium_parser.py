@@ -183,7 +183,7 @@ class SeleniumPageParser(PageParser):
         if (isinstance(self.where, self.setting.webdriver_class) or
                 is_web_element):
             supported_identifiers.extend(
-                [IdEnum.id, IdEnum.class_, IdEnum.xpath, IdEnum.tag])
+                [IdEnum.id, IdEnum._class, IdEnum.xpath, IdEnum.tag])
 
         if is_web_element:
             supported_identifiers.extend([IdEnum.attr, IdEnum.text])

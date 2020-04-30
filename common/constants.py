@@ -3,4 +3,4 @@ class BaseEnumerate:
 
     @classmethod
     def get_choices(cls):
-        return [(value, key) for key, value in cls.values.items()]
+        return [item for item in cls.values.items()]
