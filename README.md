@@ -5,7 +5,11 @@ requests, selenium, beautufulsoap4.
 
 ##### Порядок установки и использования проекта:
 - Создайте и наcтройте виртуальное окружение для Python
-- Установите нужные пакеты из `requirements` командой `pip install -r requirements/base.txt`
+- Установите нужные пакеты из `requirements`:
+    
+    - Для обычных пользователей - командой `pip install -r requirements/base.txt`
+    - Для разработчиков - командой `pip install -r requirements/dev.txt`
+    
 - При необходимости настройте переменную среды SITE_CONFIG_PATH (определяет путь
 до файла конфигураций сайтов). 
 Можно не указывать данную переменную среды, по умолчанию

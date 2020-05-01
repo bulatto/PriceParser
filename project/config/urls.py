@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from config.settings.dev import DEBUG
 
 import user
 import parsing.views
@@ -15,3 +16,9 @@ urlpatterns = [
     path('price_task/<int:product_id>/', parsing.views.price_task),
     # path('authentificate', user.views.authentificate)
 ]
+
+if DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
