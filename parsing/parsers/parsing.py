@@ -8,30 +8,33 @@ from .constants import PageParserEnum
 from .exceptions import *
 
 
+parser_classes = {
+    PageParserEnum.Selenium: SeleniumPageParser,
+    PageParserEnum.Requests: RequestsPageParser
+}
+
+
 class Parsing:
     """Основной класс, соединяющий парсеры с сайтами"""
 
     def __init__(self, url):
+        assert url, 'Url не должен быть пустым!'
+
         self.url = url
         self.site_config = self.get_site_config()
-        self.parser = self.get_parser(
-            self.site_config.parser_type, url)
+        parser_class = self.get_parser_class(self.site_config.parser_type)
+        self.parser = parser_class(url)
 
     @staticmethod
-    def get_parser(parser_type, url):
+    def get_parser_class(parser_type):
         """Получение экземпляра парсера"""
         assert parser_type is not None, f'Некорретный тип парсера - {parser_type}'
-        assert url, f'Задана некорретная ссылка на сайт - {url}'
 
-        parser_class = {
-            PageParserEnum.Selenium: SeleniumPageParser,
-            PageParserEnum.Requests: RequestsPageParser
-        }.get(parser_type)
-
-        if not parser_class:
+        parser_class = parser_classes.get(parser_type)
+        if parser_class:
+            return parser_class
+        else:
             raise IncorrectParserType()
-
-        return parser_class(url)
 
     def get_site_config(self):
         base_url = urlparse(self.url).netloc

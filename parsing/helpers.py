@@ -21,15 +21,16 @@ class SiteTaskContextManager:
      и для вывода информации при запуске и завершении задач"""
     def __init__(self, product):
         self.product = product
+        self.task = None
 
     def __enter__(self):
         print('---------------------------------------------')
         print(f'Задача обновления данных сайта '
               f'(id={self.product.id}) была запущена!')
-        RunningTask.objects.create(product=self.product)
+        self.task = RunningTask.objects.create(product=self.product)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        RunningTask.close_task_for_site(self.product)
+        RunningTask.close_task_by_id(self.task.id)
         print('---------------------------------------------')
 
 

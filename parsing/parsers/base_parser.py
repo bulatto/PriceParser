@@ -27,18 +27,18 @@ class PageParser(metaclass=ABCMeta):
         :raise: ElementNotFoundedOnPage
         """
 
-        if not isinstance(elem_src, list):
-            return self.get_element_on_page(elem_src)
-        else:
+        if isinstance(elem_src, list):
             for el_src in elem_src:
                 elem = self.try_get_element_on_page(el_src)
                 if elem:
                     return elem
             raise ElementNotFoundedOnPage()
+        else:
+            return self.get_element_on_page(elem_src)
 
     @abstractmethod
     def open(self):
-        pass
+        print(f'Открытие сайта {self.url}')
 
     @abstractmethod
     def get_element_on_page(self, elem_src):
@@ -48,4 +48,4 @@ class PageParser(metaclass=ABCMeta):
         pass
 
     def close(self):
-        pass
+        print('Закрытие сайта')
