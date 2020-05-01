@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from config.settings import BASE_DIR
+from config.settings.base import BASE_DIR
 
 
 def relative_path(path):

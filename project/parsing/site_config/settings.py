@@ -2,7 +2,7 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-from config.settings import PROJECT_SETTINGS_DIR
+from config.settings.base import PROJECT_SETTINGS_DIR
 
 
 # Расположение конфигураций сайтов

@@ -7,7 +7,7 @@ from selenium.webdriver import FirefoxOptions
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.remote.webelement import WebElement
 
-from config.settings import ADDITIONAL_FILES_DIR
+from config.settings.base import ADDITIONAL_FILES_DIR
 
 from parsing.parsers.base_parser import PageParser
 from parsing.parsers.helpers import open_parser, get_num_of_list

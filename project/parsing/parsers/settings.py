@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 from django.core.exceptions import ImproperlyConfigured
 
-from config.settings import PROJECT_SETTINGS_DIR, LOGS_DIR
+from config.settings.base import PROJECT_SETTINGS_DIR, LOGS_DIR
 
 
 def get_parser_settings():

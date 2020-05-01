@@ -14,8 +14,8 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 PROJECT_DIR = os.path.join(BASE_DIR, 'project')
 ADDITIONAL_FILES_DIR = os.path.join(BASE_DIR, 'additional_files')
@@ -43,7 +43,7 @@ DEFAULT_IMG_NAME = os.path.join(GOODS_IMAGE_PATH, 'default.jpg')
 SECRET_KEY = 'bwnd7+*dlx*(vux25zj3d$e7p5o0j(lcd34zo^^o%+^4g5wjh)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
