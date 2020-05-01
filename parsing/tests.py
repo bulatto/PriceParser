@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from urllib.parse import urlparse
 
 from config.settings import DEFAULT_IMG_NAME
+from parsing.parsers.exceptions import ElementNotFoundedOnPage
 from parsing.site_config.config_parser import SiteConfigParser
 from .models import Product
 from .parsers import Parsing, PhotoDownloader
@@ -16,7 +17,7 @@ class TestParsing(TestCase):
         sites_list = Product.objects.values_list('id', 'url')
         # Словарь, в которому будут содержаться уникальные сайты
         self.unique_sites = dict.fromkeys(
-            set(urlparse(s[1]).netloc for s in sites_list))
+            set(urlparse(url).netloc for id, url in sites_list))
         # Найдем по одному представителя каждого сайта
         for id, url in sites_list:
             url_netloc = urlparse(url).netloc
@@ -37,9 +38,15 @@ class TestParsing(TestCase):
         """Тесты для уникальных сайтов"""
         for url in self.unique_sites.values():
             print('--------------------------------')
-            price, photo = Parsing(url).parse_data()
-            print(f'Price - {price}; Photo - {photo}')
+            try:
+                price, photo = Parsing(url).parse_data()
+                print(f'Price - {price}; Photo - {photo}')
+            except ElementNotFoundedOnPage:
+                print(f'Не удалось найти элемент на странице {url}! '
+                      'Проверьте конфигурацию сайта.')
+                self.fail()
             print('--------------------------------')
+
             self.assertIsNotNone(price)
             self.assertIsNotNone(photo)
 
@@ -54,17 +61,17 @@ class TestPhotoDownloader(TestCase):
     def test_correct_url(self):
         success, photo, _ = PhotoDownloader(self.image_urls['correct']).download()
         self.assertTrue(success)
-        self.assertNotEqual(photo, DEFAULT_IMG_NAME)
+        self.assertIsNotNone(photo)
 
     def test_wrong_url(self):
         success, photo, _ = PhotoDownloader(self.image_urls['wrong']).download()
         self.assertFalse(success)
-        self.assertEqual(photo, DEFAULT_IMG_NAME)
+        self.assertIsNone(photo)
 
     def test_empty_url(self):
         success, photo, _ = PhotoDownloader('').download()
         self.assertFalse(success)
-        self.assertEqual(photo, DEFAULT_IMG_NAME)
+        self.assertIsNone(photo)
 
 
 class TestCheckParentheses(TestCase):

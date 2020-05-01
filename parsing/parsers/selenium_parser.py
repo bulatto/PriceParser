@@ -230,6 +230,7 @@ class SeleniumPageParser(PageParser):
         identifier_functions = self.get_supported_identifier_functions()
         function_tuple = identifier_functions.get(elem_src.type)
         if not function_tuple:
+            print('Подходящая функция не была найдена.')
             raise ElementNotFoundedOnPage(elem_src)
         return self.convert_function_from_tuple(function_tuple)
 
@@ -242,12 +243,11 @@ class SeleniumPageParser(PageParser):
         :return args, kwargs: Неименованные/именованные аргументы для функции
         :raise BaseParsingException
         """
-        args = []
-        kwargs = {}
+        args, kwargs = [], {}
         if isinstance(self.where, list):
             try:
-                kwargs['elem_list'] = self.where
-                kwargs['num'] = int(elem_src.id)
+                kwargs.update(
+                    {'elem_list': self.where, 'num': int(elem_src.id)})
             except ValueError:
                 raise BaseParsingException('Некорректный параметр!')
         elif function == getattr and elem_src.type == IdentifierEnum.text:
@@ -264,12 +264,12 @@ class SeleniumPageParser(PageParser):
         :raise: WrongIdentifier, ElementNotFoundedOnPage
         """
 
+        print(f'Type={IdentifierEnum.values[elem_src.type]}, id={elem_src.id}')
         function = self.get_identifier_function(elem_src)
         args, kwargs = self.get_param_for_identifier_function(
             function, elem_src)
-        print(f'Function={function}, id={elem_src.id}', end='')
         result = function(*args, **kwargs)
-        print(f', result={result}')
+        print(f'Результат парсинга={result}')
         if not result:
             raise ElementNotFoundedOnPage()
 
