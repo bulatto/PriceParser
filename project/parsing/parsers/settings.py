@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 from django.core.exceptions import ImproperlyConfigured
 
-from config.settings.base import PROJECT_SETTINGS_DIR, LOGS_DIR
+from config.settings.base import PROJECT_SETTINGS_DIR
 
 
 def get_parser_settings():
@@ -12,14 +12,13 @@ def get_parser_settings():
     parser_setting_file_name = os.path.join(
         PROJECT_SETTINGS_DIR, 'parser_settings.txt')
     if not os.path.exists(parser_setting_file_name):
-        raise ImproperlyConfigured(f'Файл {parser_setting_file_name} не найден!')
+        raise ImproperlyConfigured(
+            f'Файл {parser_setting_file_name} не найден!')
 
     settings.read(parser_setting_file_name)
     return settings
 
 
+# Настройки парсеров
 parser_settings = get_parser_settings()
-SELENIUM_VISIBLE = (
-    parser_settings.getboolean('Selenium', 'VISIBLE')
-    if parser_settings.has_option('Selenium', 'VISIBLE') else False)
-SELENIUM_LOGS_FILE = os.path.join(LOGS_DIR, 'selenium.log')
+

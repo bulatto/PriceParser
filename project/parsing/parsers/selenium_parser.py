@@ -9,16 +9,17 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from config.settings.base import ADDITIONAL_FILES_DIR
 
+
 from parsing.parsers.base_parser import PageParser
 from parsing.parsers.helpers import open_parser, get_num_of_list
-from parsing.parsers.settings import SELENIUM_VISIBLE, SELENIUM_LOGS_FILE
+from parsing.parsers.selenium_settings import SELENIUM_VISIBLE
+from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_FILE
+from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_TYPE
+from parsing.parsers.selenium_settings import SELENIUM_LOGS_FILE
+
 from .constants import IdentifierEnum
+from .enum import SeleniumProgramEnum
 from .exceptions import *
-
-
-class SeleniumProgramEnum:
-    Chrome = 0
-    Firefox = 1
 
 
 class SeleniumSettings:
@@ -42,12 +43,12 @@ class SeleniumSettings:
         SeleniumProgramEnum.Chrome: dict(
             webdriver_class=webdriver.Chrome,
             option_class=ChromeOptions,
-            path='chromedriver.exe'
+            path=SELENIUM_WEBDRIVER_FILE
         ),
         SeleniumProgramEnum.Firefox: dict(
             webdriver_class=webdriver.Firefox,
             option_class=FirefoxOptions,
-            path='geckodriver.exe'
+            path=SELENIUM_WEBDRIVER_FILE
         )
     }
 
@@ -126,7 +127,7 @@ class SeleniumPageParser(PageParser):
 
     url = None
     visible = SELENIUM_VISIBLE
-    webdriver_type = SeleniumProgramEnum.Chrome
+    webdriver_type = SELENIUM_WEBDRIVER_TYPE
     setting_class = SeleniumSettings
 
     def get_webdriver(self):
