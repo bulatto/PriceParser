@@ -15,7 +15,7 @@ class PhotoDownloader:
     supported_formats = ['jpg', 'png', 'jpeg']
 
     def __init__(self, url=None):
-        self.photo_url = url
+        self.photo_url = url if not url.startswith('//') else f'https:{url}'
 
     def get_file_format(self):
         """Получает расширение файла изображения для дальнейшей обработки

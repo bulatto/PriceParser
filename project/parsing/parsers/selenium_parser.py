@@ -124,7 +124,6 @@ class SeleniumSettings:
 class SeleniumPageParser(PageParser):
     """Парсер Selenium"""
 
-    url = None
     visible = SELENIUM_VISIBLE
     webdriver_type = SELENIUM_WEBDRIVER_TYPE
     setting_class = SeleniumSettings
@@ -193,47 +192,6 @@ class SeleniumPageParser(PageParser):
 
         return supported_identifiers
 
-    def get_supported_identifier_functions(self):
-        """Получение словаря только с функциями, поддерживаемыми для текущего
-        элемента self.where. В данной функции можно переопределить ограничения
-        на функции и идентификаторы
-        """
-        supported_identifiers = self.get_supported_identifiers_list()
-        result_dict = {}
-        identifier_functions = self.get_identifier_functions()
-        for identificator in supported_identifiers:
-            if identificator in identifier_functions:
-                result_dict[identificator] = identifier_functions[
-                    identificator]
-        return result_dict
-
-    def convert_function_from_tuple(self, function_tuple):
-        """Преобразование определённого кортежа в функцию"""
-        if not isinstance(function_tuple, tuple):
-            raise ValueError(
-                'Неверный тип элемента для преобразования в функцию')
-        element, func = function_tuple
-        if element is None and callable(func):
-            return func
-        elif element:
-            if element == 'where' and isinstance(func, str):
-                return getattr(self.where, func)
-
-        raise ValueError('Не удалось преобразовать элемент в функцию')
-
-    def get_identifier_function(self, elem_src):
-        """Возвращает функцию для парсинга кокретного элемента
-        :param elem_src: Тип идентификатора и сам идентификатор
-        :return: Фунция для парсинга элемента
-        :raise: ElementNotFoundedOnPage
-        """
-        identifier_functions = self.get_supported_identifier_functions()
-        function_tuple = identifier_functions.get(elem_src.type)
-        if not function_tuple:
-            print('Подходящая функция не была найдена.')
-            raise ElementNotFoundedOnPage(elem_src)
-        return self.convert_function_from_tuple(function_tuple)
-
     def get_param_for_identifier_function(self, function, elem_src):
         """Возвращает словарь параметров для передачи в функцию
         получения идентификатора
@@ -256,22 +214,3 @@ class SeleniumPageParser(PageParser):
             # По умолчанию
             args = [elem_src.id]
         return args, kwargs
-
-    def get_element_on_page(self, elem_src):
-        """ Получение элемента на странице согласно идентификатору
-        :param elem_src: Тип идентификатора и сам идентификатор
-        :type elem_src: TypeAndId
-        :raise: WrongIdentifier, ElementNotFoundedOnPage
-        """
-
-        print(f'Type={IdentifierEnum.values[elem_src.type]}, id={elem_src.id}')
-        function = self.get_identifier_function(elem_src)
-        args, kwargs = self.get_param_for_identifier_function(
-            function, elem_src)
-        result = function(*args, **kwargs)
-        print(f'Результат парсинга={result}')
-        if not result:
-            raise ElementNotFoundedOnPage()
-
-        self.where = result
-        return result
