@@ -8,7 +8,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.remote.webelement import WebElement
 
 from config.settings.base import ADDITIONAL_FILES_DIR
-
+from parsing.enum import IdentifierEnum
 
 from parsing.parsers.base_parser import PageParser
 from parsing.parsers.helpers import open_parser, get_num_of_list
@@ -17,7 +17,6 @@ from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_FILE
 from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_TYPE
 from parsing.parsers.selenium_settings import SELENIUM_LOGS_FILE
 
-from .constants import IdentifierEnum
 from .enum import SeleniumProgramEnum
 from .exceptions import *
 
@@ -165,7 +164,7 @@ class SeleniumPageParser(PageParser):
         """
         return {
             IdentifierEnum.id: ('where', 'find_element_by_id'),
-            IdentifierEnum._class: ('where', 'find_elements_by_class_name'),
+            IdentifierEnum.class_: ('where', 'find_elements_by_class_name'),
             IdentifierEnum.xpath: ('where', 'find_element_by_xpath'),
             IdentifierEnum.tag: ('where', 'find_element_by_tag_name'),
             IdentifierEnum.attr: ('where', 'get_attribute'),
@@ -184,7 +183,7 @@ class SeleniumPageParser(PageParser):
         if (isinstance(self.where, self.setting.webdriver_class) or
                 is_web_element):
             supported_identifiers.extend(
-                [IdEnum.id, IdEnum._class, IdEnum.xpath, IdEnum.tag])
+                [IdEnum.id, IdEnum.class_, IdEnum.xpath, IdEnum.tag])
 
         if is_web_element:
             supported_identifiers.extend([IdEnum.attr, IdEnum.text])

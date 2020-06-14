@@ -1,6 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 
-from common.constants import BaseEnumerate
+from common.classes import BaseEnumerate
 
 
 class SeleniumProgramEnum(BaseEnumerate):

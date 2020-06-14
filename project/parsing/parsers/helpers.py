@@ -2,7 +2,7 @@ from time import sleep
 
 from django.core.exceptions import ImproperlyConfigured
 
-from parsing.parsers.constants import IdentifierEnum
+from parsing.enum import IdentifierEnum
 
 
 def open_parser(function):

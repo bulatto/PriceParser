@@ -2,8 +2,9 @@ from configparser import ConfigParser
 
 from django.core.exceptions import ImproperlyConfigured
 
-from parsing.parsers.constants import IdentifierEnum, TypeAndId, PageParserEnum
+from parsing.enum import PageParserEnum
 from parsing.parsers.helpers import get_identifier
+from parsing.structures import TypeAndId
 
 
 class SiteConfig:

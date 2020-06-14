@@ -1,10 +1,10 @@
 from urllib.parse import urlparse
 
+from parsing.enum import PageParserEnum
 from parsing.parsers.photo_downloader import PhotoDownloader
 from parsing.parsers.requests_parser import RequestsPageParser
 from parsing.parsers.selenium_parser import SeleniumPageParser
 from parsing.site_config import all_sites_config
-from .constants import PageParserEnum
 from .exceptions import *
 
 

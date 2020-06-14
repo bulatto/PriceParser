@@ -1,14 +1,12 @@
-from collections import namedtuple
-
 from django.core.exceptions import ImproperlyConfigured
 
-from common.constants import BaseEnumerate
+from common.classes import BaseEnumerate
 
 
 class IdentifierEnum(BaseEnumerate):
     """Типы идентификаторов элементов на html странице"""
     id = 0
-    _class = 1
+    class_ = 1
     xpath = 2
     tag = 3
     attr = 4
@@ -17,7 +15,7 @@ class IdentifierEnum(BaseEnumerate):
 
     values = {
         id: 'id',
-        _class: 'class',
+        class_: 'class',
         xpath: 'xpath',
         tag: 'tag',
         attr: 'attr',
@@ -28,7 +26,7 @@ class IdentifierEnum(BaseEnumerate):
     # Словарь для перевода идентификаторов из текста
     str_to_identifier = {
         'ID': id,
-        'CLASS': _class,
+        'CLASS': class_,
         'XPATH': xpath,
         'TAG': tag,
         'ATTRIBUTE': attr,
@@ -59,6 +57,3 @@ class PageParserEnum(BaseEnumerate):
             if name.upper() == string.upper():
                 return parser_id
         raise ImproperlyConfigured(f'Указан некорректный тип парсера {string}')
-
-
-TypeAndId = namedtuple('TypeAndId', ['type', 'id'])
