@@ -1,5 +1,5 @@
-import os
 from configparser import ConfigParser
+import os
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -21,4 +21,3 @@ def get_parser_settings():
 
 # Настройки парсеров
 parser_settings = get_parser_settings()
-

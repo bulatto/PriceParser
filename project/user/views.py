@@ -1,5 +1,5 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import render
 
 from .helpers import auth
 
@@ -18,6 +18,3 @@ def authentificate(request):
     else:
         data = {'is_try_again': True}
         return render(request, 'login.html', context=data)
-
-
-

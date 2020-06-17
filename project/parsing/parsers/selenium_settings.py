@@ -2,7 +2,8 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-from config.settings.base import LOGS_DIR, BASE_DIR
+from config.settings.base import BASE_DIR
+from config.settings.base import LOGS_DIR
 
 from .enum import SeleniumProgramEnum
 from .settings import parser_settings

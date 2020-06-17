@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render
 
-from .helpers import (run_price_task)
+from .helpers import run_price_task
 
 
 def index(request):

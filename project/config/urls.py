@@ -1,10 +1,12 @@
 from django.contrib import admin
-from django.urls import path, include
-from config.settings.dev import DEBUG
+from django.urls import include
+from django.urls import path
 
-import user
+from config.settings.dev import DEBUG
 import parsing.views
 import product.views
+import user
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

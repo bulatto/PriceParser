@@ -1,6 +1,8 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 
 from parsing.enum import IdentifierEnum
+
 from .exceptions import *
 
 

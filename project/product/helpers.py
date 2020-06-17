@@ -1,9 +1,10 @@
 import os
 
 from common.helpers import relative_path
+from config.settings.base import DEFAULT_IMG_NAME
+from config.settings.base import GOODS_IMAGE_PATH
 from parsing.models import RunningTask
 from product.forms import UrlForm
-from config.settings.base import GOODS_IMAGE_PATH, DEFAULT_IMG_NAME
 from product.models import Product
 
 

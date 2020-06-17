@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
-from django.db import models, transaction
+from django.db import models
+from django.db import transaction
+
 from common.helpers import get_datetime_string
+
 
 class Product(models.Model):
     user = models.ForeignKey(

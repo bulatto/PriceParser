@@ -1,12 +1,15 @@
-from django.test import TestCase
-from django.contrib.auth.models import User
 from urllib.parse import urlparse
+
+from django.contrib.auth.models import User
+from django.test import TestCase
 
 from config.settings.base import DEFAULT_IMG_NAME
 from parsing.parsers.exceptions import ElementNotFoundedOnPage
 from parsing.site_config.config_parser import SiteConfigParser
+
 from .models import Product
-from .parsers import Parsing, PhotoDownloader
+from .parsers import Parsing
+from .parsers import PhotoDownloader
 
 
 class TestParsing(TestCase):

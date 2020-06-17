@@ -1,4 +1,5 @@
 from parsing.site_config.config_parser import SiteConfigParser
+
 from .settings import SITE_CONFIG_PATH
 
 

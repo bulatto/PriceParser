@@ -1,7 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render
 
 from .forms import UrlForm
-from .helpers import get_sites_and_url_form, add_url, delete_site
+from .helpers import add_url
+from .helpers import delete_site
+from .helpers import get_sites_and_url_form
 
 
 def show_goods(request, *args, **kwargs):

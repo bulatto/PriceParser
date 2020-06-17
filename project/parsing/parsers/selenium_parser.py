@@ -3,19 +3,19 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
 from selenium import webdriver
-from selenium.webdriver import FirefoxOptions
 from selenium.webdriver import ChromeOptions
+from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.remote.webelement import WebElement
 
 from config.settings.base import ADDITIONAL_FILES_DIR
 from parsing.enum import IdentifierEnum
-
 from parsing.parsers.base_parser import PageParser
-from parsing.parsers.helpers import open_parser, get_num_of_list
+from parsing.parsers.helpers import get_num_of_list
+from parsing.parsers.helpers import open_parser
+from parsing.parsers.selenium_settings import SELENIUM_LOGS_FILE
 from parsing.parsers.selenium_settings import SELENIUM_VISIBLE
 from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_FILE
 from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_TYPE
-from parsing.parsers.selenium_settings import SELENIUM_LOGS_FILE
 
 from .enum import SeleniumProgramEnum
 from .exceptions import *

@@ -1,6 +1,7 @@
-import pytz
+from django.db import models
+from django.db import transaction
 from django.utils import timezone
-from django.db import models, transaction
+import pytz
 
 from common.helpers import get_datetime_string
 from parsing.constants import TASK_TIMEOUT

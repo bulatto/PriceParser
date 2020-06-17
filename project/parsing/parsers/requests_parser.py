@@ -1,10 +1,14 @@
+from bs4 import BeautifulSoup
+from bs4 import element
 import requests
-from bs4 import BeautifulSoup, element
 
 from parsing.enum import IdentifierEnum
-from parsing.parsers import ElementNotFoundedOnPage, BaseParsingException
+from parsing.parsers import BaseParsingException
+from parsing.parsers import ElementNotFoundedOnPage
 from parsing.parsers.base_parser import PageParser
-from parsing.parsers.helpers import open_parser, get_num_of_list
+from parsing.parsers.helpers import get_num_of_list
+from parsing.parsers.helpers import open_parser
+
 
 # Типы идентификаторов элементов на html странице. Необходимо для изменения
 # нескольких элементов в словаре values

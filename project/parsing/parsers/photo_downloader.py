@@ -1,11 +1,14 @@
+from urllib.parse import urlparse
 import os
 import random
+
 import requests
-from urllib.parse import urlparse
 
 from config.settings.base import GOODS_IMAGE_PATH
-from .exceptions import (
-    UnsupportedFileFormat, FileNotDownloaded, PhotoDownloaderException)
+
+from .exceptions import FileNotDownloaded
+from .exceptions import PhotoDownloaderException
+from .exceptions import UnsupportedFileFormat
 
 
 class PhotoDownloader:
