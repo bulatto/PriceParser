@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 import os
-import random
+import uuid
 
 import requests
 
@@ -32,17 +32,14 @@ class PhotoDownloader:
                 return f
         raise UnsupportedFileFormat(url_path)
 
-    @staticmethod
-    def generate_file_name(img_format):
+    @classmethod
+    def generate_file_name(cls, img_format):
         """Генерирует имя файла изображения, проверяет, что имя уникально
         :param img_format: Расширение файла изображения
         """
-        is_unique = False
-        file_name = None
-        while not is_unique:
-            random_num = random.randint(100, 10 ** 6)
-            file_name = f'img_{random_num}.{img_format}'
-            is_unique = not os.path.exists(file_name)
+        file_name = f'{uuid.uuid4()}.{img_format}'
+        if os.path.exists(os.path.join(GOODS_IMAGE_PATH, file_name)):
+            file_name = cls.generate_file_name(img_format)
         return file_name
 
     @staticmethod
