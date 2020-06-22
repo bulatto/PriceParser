@@ -12,8 +12,8 @@ def open_parser(function):
             try:
                 function(self)
                 break
-            except:
-                print('Произошла ошибка при открытии сайта!')
+            except Exception as e:
+                print(f'Произошла ошибка при открытии сайта! {e}')
             sleep(1)
     return fun
 

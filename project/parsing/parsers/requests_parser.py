@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from bs4 import element
 import requests
+from fake_useragent import UserAgent
 
 from parsing.enum import IdentifierEnum
 from parsing.parsers import BaseParsingException
@@ -26,7 +27,8 @@ class RequestsPageParser(PageParser):
         self.url = url
 
     def return_soup_from_url(self,):
-        response = requests.get(self.url)
+        headers_dict = {'User-Agent': UserAgent().chrome}
+        response = requests.get(self.url, headers=headers_dict)
         return BeautifulSoup(response.text, "html.parser")
 
     @open_parser
