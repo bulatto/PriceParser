@@ -11,34 +11,6 @@ class PageParser(metaclass=ABCMeta):
     # Элемент, с которого начинается поиск
     where = None
 
-    def try_get_element_on_page(self, elem_src):
-        """Безопасное получение элемента на странице
-        Не требует переопределения"""
-
-        try:
-            elem = self.get_element_on_page(elem_src)
-            return elem
-        except ElementNotFoundedOnPage(elem_src) as e:
-            print(e.message)
-            return None
-
-    def get_page_elem(self, elem_src):
-        """Расширенная обработка элемента. Позволяет задавать несколько типов
-        идентификаторов, будет выбран первый ненулевой результат.
-        Не требует переопределения
-        :param elem_src: Тип и сам идентификатор
-        :type elem_src: TypeAndId
-        :raise: ElementNotFoundedOnPage
-        """
-        if isinstance(elem_src, list):
-            for el_src in elem_src:
-                elem = self.try_get_element_on_page(el_src)
-                if elem:
-                    return elem
-            raise ElementNotFoundedOnPage()
-        else:
-            return self.get_element_on_page(elem_src)
-
     @abstractmethod
     def open(self):
         """Метод, выполняющийся при открытии сайта"""
@@ -68,6 +40,31 @@ class PageParser(metaclass=ABCMeta):
         """Получение списка идентификаторов, поддерживаемых для текущего
         элемента self.where
         """
+        pass
+
+    def parse_sequence(self, parsing_sequence):
+        """Обработка последовательности элементов и получение информации со
+        страницы. В случае если для элемента определено несколько
+        последовательностей, будет выбран первый ненулевой результат.
+        Не требует переопределения
+        :param parsing_sequence: Последовательность элементов на странице для
+            получения определённой информации
+        :type parsing_sequence: List[List[ParsingElement]]
+        :raise: ElementNotFoundedOnPage
+        """
+        self.reset_where_to_find()
+        for sequence_num, sequence in enumerate(parsing_sequence):
+            try:
+                element = None
+                for parsing_element in sequence:
+                    element = self.get_element_on_page(parsing_element)
+                return element
+            except ElementNotFoundedOnPage as e:
+                if sequence_num == len(parsing_sequence) - 1:
+                    print(e.message)
+                    raise e
+                else:
+                    continue
 
     def convert_function_from_tuple(self, function_tuple):
         """Преобразование определённого кортежа в функцию"""
@@ -83,17 +80,17 @@ class PageParser(metaclass=ABCMeta):
 
         raise ValueError('Не удалось преобразовать элемент в функцию')
 
-    def get_identifier_function(self, elem_src):
+    def get_identifier_function(self, parsing_element):
         """Возвращает функцию для парсинга конкретного элемента
-        :param elem_src: Тип идентификатора и сам идентификатор
+        :param parsing_element: Тип идентификатора и сам идентификатор
         :return: Фунция для парсинга элемента
         :raise: ElementNotFoundedOnPage
         """
         identifier_functions = self.get_supported_identifier_functions()
-        function_tuple = identifier_functions.get(elem_src.type)
+        function_tuple = identifier_functions.get(parsing_element.type)
         if not function_tuple:
             print('Подходящая функция не была найдена.')
-            raise ElementNotFoundedOnPage(elem_src)
+            raise ElementNotFoundedOnPage(parsing_element)
         return self.convert_function_from_tuple(function_tuple)
 
     def get_supported_identifier_functions(self):
@@ -111,35 +108,36 @@ class PageParser(metaclass=ABCMeta):
         return result_dict
 
     @abstractmethod
-    def get_param_for_identifier_function(self, function, elem_src):
+    def get_param_for_identifier_function(self, function, parsing_element):
         """Возвращает словарь параметров для передачи в функцию
         получения идентификатора
-        :param elem_src: Тип идентификатора и сам идентификатор
-        :type elem_src: TypeAndId
-        :param elem_src: Функция для получения идентификатора
+        :param function: Функция для получения идентификатора
+        :param parsing_element: Тип идентификатора и сам идентификатор
+        :type parsing_element: ParsingElement
         :return args, kwargs: Неименованные/именованные аргументы для функции
         :raise BaseParsingException
         """
         pass
 
-    def get_element_on_page(self, elem_src):
+    def get_element_on_page(self, parsing_element):
         """ Получение элемента на странице согласно идентификатору
-        :param elem_src: Тип идентификатора и сам идентификатор
-        :type elem_src: TypeAndId
+        :param parsing_element: Тип идентификатора и сам идентификатор
+        :type parsing_element: ParsingElement
 
         :return: Искомый элемент страницы
         :rtype: Any
 
         :raise: WrongIdentifier, ElementNotFoundedOnPage
         """
-        print(f'Type={IdentifierEnum.values[elem_src.type]}, id={elem_src.id}')
-        function = self.get_identifier_function(elem_src)
+        print(f'Type={IdentifierEnum.values[parsing_element.type]},'
+              f'id={parsing_element.identifier}')
+        function = self.get_identifier_function(parsing_element)
         args, kwargs = self.get_param_for_identifier_function(
-            function, elem_src)
+            function, parsing_element)
         result = function(*args, **kwargs)
         print(f'Результат парсинга={result}')
         if not result:
-            raise ElementNotFoundedOnPage()
+            raise ElementNotFoundedOnPage(parsing_element)
 
         self.where = result
         return result

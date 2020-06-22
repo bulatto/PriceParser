@@ -76,22 +76,23 @@ class RequestsPageParser(PageParser):
 
         return supported_identifiers
 
-    def get_param_for_identifier_function(self, function, elem_src):
+    def get_param_for_identifier_function(self, function, parsing_element):
         args, kwargs = [], {}
 
         if isinstance(self.where, list):
             try:
                 kwargs.update(
-                    {'elem_list': self.where, 'num': int(elem_src.id)})
+                    {'elem_list': self.where,
+                     'num': int(parsing_element.identifier)})
             except ValueError:
                 raise BaseParsingException('Некорректный параметр!')
         elif (function == getattr and
-                elem_src.type == RequestsIdentifierEnum.text):
+                parsing_element.type == RequestsIdentifierEnum.text):
             args = [self.where, 'text', None]
-        elif elem_src.type == RequestsIdentifierEnum.attr:
-            args = [self.where, elem_src.id]
+        elif parsing_element.type == RequestsIdentifierEnum.attr:
+            args = [self.where, parsing_element.identifier]
         else:
             # По умолчанию
-            identifier = RequestsIdentifierEnum.values[elem_src.type]
-            kwargs.update({identifier: elem_src.id})
+            identifier = RequestsIdentifierEnum.values[parsing_element.type]
+            kwargs.update({identifier: parsing_element.identifier})
         return args, kwargs

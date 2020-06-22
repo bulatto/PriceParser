@@ -51,6 +51,6 @@ def run_price_task(product_id):
         return
 
     with SiteTaskContextManager(product=product):
-        price, photo_name = Parsing(product.url).parse_data()
+        price, photo_name = Parsing(product.url).parse()
         print(f'Price - {price}; Photo - {photo_name}')
         product.add_price_and_photo(price, photo_name)

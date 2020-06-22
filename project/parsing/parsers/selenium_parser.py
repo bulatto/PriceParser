@@ -154,13 +154,6 @@ class SeleniumPageParser(PageParser):
         self.where = self.driver
 
     def get_identifier_functions(self):
-        """Получение словаря с функциями для парсинга идентификаторов.
-        Ключом словаря является id идентификатора,
-        значением - кортеж, первый элемент которого - элемент, для которого
-        вызывается функция, второй - сама функция или её название.
-        Данные кортежи затем будут преобразованы в нормальные функции.
-        Их преобразование см. в функции convert_function_from_tuple
-        """
         return {
             IdentifierEnum.id: ('where', 'find_element_by_id'),
             IdentifierEnum.class_: ('where', 'find_elements_by_class_name'),
@@ -172,9 +165,6 @@ class SeleniumPageParser(PageParser):
         }
 
     def get_supported_identifiers_list(self):
-        """Получение списка идентификаторов, поддерживаемых для текущего
-        элемента self.where
-        """
         supported_identifiers = []
         IdEnum = IdentifierEnum
         is_web_element = isinstance(self.where, WebElement)
@@ -192,25 +182,18 @@ class SeleniumPageParser(PageParser):
 
         return supported_identifiers
 
-    def get_param_for_identifier_function(self, function, elem_src):
-        """Возвращает словарь параметров для передачи в функцию
-        получения идентификатора
-        :param elem_src: Тип идентификатора и сам идентификатор
-        :type elem_src: TypeAndId
-        :param elem_src: Функция для получения идентификатора
-        :return args, kwargs: Неименованные/именованные аргументы для функции
-        :raise BaseParsingException
-        """
+    def get_param_for_identifier_function(self, function, parsing_element):
         args, kwargs = [], {}
         if isinstance(self.where, list):
             try:
-                kwargs.update(
-                    {'elem_list': self.where, 'num': int(elem_src.id)})
+                kwargs.update({'elem_list': self.where,
+                               'num': int(parsing_element.identifier)})
             except ValueError:
                 raise BaseParsingException('Некорректный параметр!')
-        elif function == getattr and elem_src.type == IdentifierEnum.text:
+        elif (function == getattr and
+                parsing_element.type == IdentifierEnum.text):
             args = [self.where, 'text', None]
         else:
             # По умолчанию
-            args = [elem_src.id]
+            args = [parsing_element.identifier]
         return args, kwargs

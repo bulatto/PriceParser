@@ -25,6 +25,7 @@ def get_identifier(string):
     :raise: ImproperlyConfigured
     """
     assert string, "Строка пуста!"
+    # TODO: можно улучшить функцию
 
     for key, value in IdentifierEnum.str_to_identifier.items():
         if string.startswith(key):

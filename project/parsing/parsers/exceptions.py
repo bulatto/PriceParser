@@ -20,9 +20,10 @@ class UnsupportedSiteUrl(BaseParsingException):
 class ElementNotFoundedOnPage(BaseParsingException):
     message = 'Не удалось найти элемент на странице!'
 
-    def __init__(self, elem_src=None):
-        if elem_src:
-            self.message += f'(type={elem_src.type}, id={elem_src.id})'
+    def __init__(self, parsing_element=None):
+        if parsing_element:
+            self.message += (f'(type={parsing_element.type},'
+                             f' id={parsing_element.identifier})')
 
 
 # Исключения, связанные с загрузкой файлов

@@ -1,10 +1,12 @@
 from configparser import ConfigParser
+import re
 
 from django.core.exceptions import ImproperlyConfigured
 
+from common.helpers import check_parentheses_in_string
 from parsing.enum import PageParserEnum
 from parsing.parsers.helpers import get_identifier
-from parsing.structures import TypeAndId
+from parsing.structures import ParsingElement
 
 
 class SiteConfig:
@@ -29,8 +31,6 @@ class SiteConfigParser(ConfigParser):
         'PRICE_PATH',
         'PHOTO_PATH'
     )
-    # Идентификаторы, для которых не нужны параметры (в строковом виде)
-    no_need_for_param = ['TEXT']
 
     def check_required_fields(self):
         """Проверка наличия всех необходимых полей
@@ -44,124 +44,87 @@ class SiteConfigParser(ConfigParser):
                     raise ImproperlyConfigured(
                         error_message.format(field, section))
 
-    @staticmethod
-    def check_parentheses_in_string(string):
-        """Проверяет закрытость скобок в строке.
-        Возвращает True, если все хорошо, иначе False
-        :param string: Строка, которую необходимо проверить
-        :return: Корректность расстановки скобок (True/False)
-        """
-        # Символы, которые учитываются при подсчёте
-        open_chars, close_chars = '([', ')]'
-
-        parentheses = []
-        for ch in (c for c in string if c in open_chars + close_chars):
-            if ch in open_chars:
-                parentheses.append(ch)
-            else:
-                if not parentheses or (
-                        parentheses.pop() != open_chars[close_chars.index(ch)]):
-                    return False
-        return len(parentheses) == 0
-
     def check_config_parentheses(self):
-        """Проверка, что все скобки в файле конфигурации имеют пару (закрыты)
+        """Проверка, что все скобки в файле конфигурации имеют пару (закрыты),
+        и следуют в правильном порядке (открытая, затем закрытая скобка)
+
         :raise: ImproperlyConfigured
         """
         for section in self.sections():
             for field, value in self[section].items():
-                result = self.check_parentheses_in_string(value)
+                result = check_parentheses_in_string(value)
                 if not result:
                     raise ImproperlyConfigured(
-                        f'В cекции {section} в параметре {field} '
+                        f'В конфигурации сайтов в разделе [{section}] {field} '
                         f'неверно расставлены скобки')
 
-    @classmethod
-    def get_param_in_parentheses(cls, element, parentheses, key=''):
-        """Возвращает параметры в скобках (фигурных и круглых).
-        Все скобки считаются закрытыми, поскольку ранее провелась проверка
-        :param element: Строка со скобками
-        :param key: Обрабатываемый параметр
-        :param parentheses: Скобки '()' или '[]'
-        :raise: ImproperlyConfigured
+    @staticmethod
+    def split_by_brackets(string, list_brackets='[]'):
+        """Разделить строку по скобкам, проверяя закрытость скобок, для того,
+        чтобы не произошла ошибка, если параметр содержит такие же скобки
+
+        :param string: Строка для разделения
+        :param list_brackets: Вид скобок '()' или '[]'
+        :return: Список строк
         """
-        assert parentheses in ['()', '[]'], 'Неправильно заданы скобки'
-        assert element, 'Пустая строка'
+        assert list_brackets in ['()', '[]'], 'Неправильно заданы скобки'
 
-        # Проверка, что указаны скобки
-        if (element.startswith(parentheses[0]) and
-                element.endswith(parentheses[1])):
-            param = element[1:-1]
-        else:
-            return element
+        if string[0] != '[' and string[-1] != ']':
+            return
 
-        # Если внутри скобок пусто
-        if not param:
-            raise ImproperlyConfigured(
-                f'Некорректно указаны параметры для идентификатора {key}')
+        open_char, close_char = list_brackets
+        splitted_list = []
 
-        if parentheses == '()':
-            return param
-        elif parentheses == '[]':
-            return cls.process_path_to_element(param)
-        raise ImproperlyConfigured('Произошла ошибка при обработке параметров!')
-
-    @classmethod
-    def process_one_identifier(cls, element):
-        """Обрабатывает один идентификатор (часть пути к элементу сайта)
-        :raise: ImproperlyConfigured
-        """
-
-        if not element:
-            raise ImproperlyConfigured(
-                f'Некорректная конфигурация сайта!')
-
-        # Получение идентификатора, с которого начинается строка
-        key, identifier = get_identifier(element)
-        # Обрезание строки (удаление идентификатора)
-        element = element[len(key):]
-
-        # Проверка необходимости параметров
-        if key in cls.no_need_for_param:
-            if len(element) > 0:
-                raise ImproperlyConfigured(
-                    f'Посторонние символы после идентификатора {key}')
-            return identifier, None
-
-        param = cls.get_param_in_parentheses(element, '()', key)
-        return identifier, param
+        stack = []
+        for num, ch in enumerate(string):
+            if ch not in list_brackets:
+                continue
+            elif ch in '([':
+                stack.append((num, ch))
+            elif not stack:
+                raise ImproperlyConfigured()
+            else:
+                popped_num, popped_char = stack.pop()
+                if popped_char != open_char:
+                    raise ImproperlyConfigured()
+                if not stack:
+                    splitted_list.append(string[popped_num: num + 1])
+        return splitted_list
 
     @classmethod
     def process_path_to_element(cls, element_path):
         """Обрабатывает пути к элементам сайта, которые необходимо получить
         :raise: ImproperlyConfigured
         """
-        source = []
-        # Удаляем пробелы
-        element_path = element_path.replace(' ', '')
+        result_sequence = []
+        regexp = r'(?:([A-Z]+) *)(?:\((.+?)\))?(?: *;? *)'
 
-        # Ищем квадратные скобки
-        if element_path.find('[') != -1 and element_path.find('];') != -1:
-            index = element_path.find('];')
-            if len(element_path) <= index + 2:
+        if element_path[0] == '[' and element_path[-1] == ']':
+            sequences_list = cls.split_by_brackets(element_path, '[]')
+        else:
+            sequences_list = [element_path]
+
+        for sequence in sequences_list:
+            regexp_result = re.findall(regexp, sequence)
+            if not regexp_result:
                 raise ImproperlyConfigured(
-                    f'Некорректно указаны параметры для идентификатора')
-            param = cls.get_param_in_parentheses(element_path[:index + 1], '[]')
-            source.append(param)
-            element_path = element_path[index + 2:]
+                    f'Неверно задана строка в конфигурации - "{element_path}"')
+            seq = []
+            for string_type, param in regexp_result:
+                # Получение типа идентификатора
+                string_key, identifier_type = get_identifier(string_type)
+                seq.append(ParsingElement(identifier_type, param))
 
-        # Разделяем строку по символу ';'
-        elements = element_path.split(';')
+            result_sequence.append(seq)
 
-        for element in elements:
-            identifier, param = cls.process_one_identifier(element)
-            source.append(TypeAndId(type=identifier, id=param))
-
-        return source
+        return result_sequence
 
     def read(self, filenames, encoding=None):
+        """Функция для чтения файла настроек, также здесь осуществляются
+        некоторые проверки коррректности заполнения файла"""
+
         super(SiteConfigParser, self).read(filenames, encoding)
-        # Проверка наличия всех обязятальных полей
+        # Проверка наличия всех обязательных полей
         self.check_required_fields()
         # Проверка корректности расстановки скобок
         self.check_config_parentheses()
@@ -178,8 +141,7 @@ class SiteConfigParser(ConfigParser):
             config = SiteConfig(
                 name=section,
                 base_url=site['BASE_URL'],
-                parser_type=PageParserEnum.get_parser_type(
-                    site['PARSER_TYPE']),
+                parser_type=PageParserEnum.get_parser_type(site['PARSER_TYPE']),
                 price_src=self.process_path_to_element(site['PRICE_PATH']),
                 photo_src=self.process_path_to_element(site['PHOTO_PATH'])
             )

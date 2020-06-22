@@ -1,9 +1,8 @@
 from urllib.parse import urlparse
-
-from django.contrib.auth.models import User
 from django.test import TestCase
 
-from config.settings.base import DEFAULT_IMG_NAME
+from common.helpers import check_parentheses_in_string
+from parsing.enum import IdentifierEnum
 from parsing.parsers.exceptions import ElementNotFoundedOnPage
 from parsing.site_config.config_parser import SiteConfigParser
 
@@ -41,8 +40,9 @@ class TestParsing(TestCase):
         """Тесты для уникальных сайтов"""
         for url in self.unique_sites.values():
             print('--------------------------------')
+            print(url)
             try:
-                price, photo = Parsing(url).parse_data()
+                price, photo = Parsing(url).parse()
                 print(f'Price - {price}; Photo - {photo}')
             except ElementNotFoundedOnPage:
                 print(f'Не удалось найти элемент на странице {url}! '
@@ -94,9 +94,86 @@ class TestCheckParentheses(TestCase):
     def test_check_correct_parentheses(self):
         for string in self.strings['correct_strings']:
             self.assertTrue(
-                SiteConfigParser.check_parentheses_in_string(string))
+                check_parentheses_in_string(string))
 
     def test_check_wrong_parentheses(self):
         for string in self.strings['wrong_strings']:
             self.assertFalse(
-                SiteConfigParser.check_parentheses_in_string(string))
+                check_parentheses_in_string(string))
+
+
+class TestSiteConfigParser(TestCase):
+
+    enum = IdentifierEnum
+
+    # Словарь с тестовыми данными
+    # Ключи - входные строки, значения -  словари с корректными результатами,
+    # которые должны получиться при вызове определённых методов
+    test_data_dict = {
+        r'CLASS(ii-product__price-current_red); NUM(0); TEXT': {
+            'split_by_brackets': None,
+            'process_path_to_element': [[
+                (enum.class_, 'ii-product__price-current_red'),
+                (enum.num, '0'),
+                (enum.text, '')
+            ]]
+        },
+        r'XPATH(//*[@id="container"]/div[1]/div[3]/div[2]/div[2]/div/div/div[1]'
+        r'/span); TEXT': {
+            'split_by_brackets': None,
+            'process_path_to_element': [[
+                (enum.xpath, r'//*[@id="container"]/div[1]/div[3]/div[2]'
+                             r'/div[2]/div/div/div[1]/span'),
+                (enum.text, '')
+            ]]
+        },
+        r'[XPATH(//*[@id="container"]/div[1]/div[3]/div[2]/div[2]/div/div/'
+        r'div[1]/span); TEXT][CLASS(final-cost); NUM(0); TEXT][ID(photo);'
+        r'TAG(a); ATTRIBUTE(href)]': {
+            'split_by_brackets': [
+                r'[XPATH(//*[@id="container"]/div[1]/div[3]/div[2]/div[2]/div/'
+                r'div/div[1]/span); TEXT]',
+                r'[CLASS(final-cost); NUM(0); TEXT]',
+                r'[ID(photo);TAG(a); ATTRIBUTE(href)]'
+            ],
+            'process_path_to_element': [
+                [(enum.xpath, r'//*[@id="container"]/div[1]/div[3]/div[2]'
+                              r'/div[2]/div/div/div[1]/span'),
+                 (enum.text, '')],
+                [(enum.class_, 'final-cost'),
+                 (enum.num, '0'),
+                 (enum.text, '')],
+                [(enum.id, 'photo'),
+                 (enum.tag, 'a'),
+                 (enum.attr, 'href')]
+            ]
+        },
+        r'[CLASS(final-cost); NUM(0); TEXT][ID(photo); TAG(a); '
+        r'ATTRIBUTE(href)]': {
+            'split_by_brackets': [
+                r'[CLASS(final-cost); NUM(0); TEXT]',
+                r'[ID(photo); TAG(a); ATTRIBUTE(href)]'],
+            'process_path_to_element': [
+                [(enum.class_, 'final-cost'),
+                 (enum.num, '0'),
+                 (enum.text, '')],
+                [(enum.id, 'photo'),
+                 (enum.tag, 'a'),
+                 (enum.attr, 'href')]
+            ]
+        }
+    }
+
+    def test_split_by_brackets(self):
+        for input_string, result_dict in self.test_data_dict.items():
+            real_result = SiteConfigParser.split_by_brackets(input_string, '[]')
+            correct_result = result_dict.get('split_by_brackets')
+            self.assertEqual(real_result, correct_result)
+
+    def test_process_path_to_element(self):
+        for input_string, result_dict in self.test_data_dict.items():
+            correct_result = result_dict.get('process_path_to_element')
+            result = SiteConfigParser.process_path_to_element(input_string)
+            real_result = [[(elem.type, elem.identifier) for elem in seq]
+                 for seq in result]
+            self.assertEqual(real_result, correct_result)
