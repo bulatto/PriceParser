@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 
 from parsing.enum import PageParserEnum
@@ -80,7 +81,21 @@ class Parsing:
 
     @staticmethod
     def price_processing(string):
-        return ''.join([c for c in string if c.isdigit()])
+        rub_strings = ['руб.', '₽', 'р.', 'руб']
+        positions = [string.find(st) for st in rub_strings]
+        pos = next((pos for pos in positions if pos >= 0), None)
+        if pos:
+            string = string[:pos]
+        result = re.search(r'\d{1,3}\s*\d{2,3}([\.,](?:\d{1,2}))?', string)
+        if result:
+            price_string = result.string.replace(',', '.').replace(' ', '')
+            try:
+                price = float(price_string)
+                return price
+            except ValueError:
+                pass
+
+        return None
 
     @staticmethod
     def photo_processing(string):
