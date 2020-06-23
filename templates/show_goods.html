@@ -30,7 +30,7 @@ width: 100%;
         <td><a href="{{ product.url }}">{{ product.url }}</a></td>
         <td>{{ product.price_in_rub }}</td>
         <td>
-            {% if not product.is_running %}
+            {% if not product.has_running_task %}
                 <form method="POST" action="price_task/{{ product.id }}/">
                     {% csrf_token %}
                     <button type="submit" class="run_task_btn">Обновить цену</button>
