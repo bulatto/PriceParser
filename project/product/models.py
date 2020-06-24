@@ -29,16 +29,16 @@ class Product(models.Model):
         return self.get_prices().last()
 
     @transaction.atomic
-    def add_price_and_photo(self, price, photoname):
+    def add_price_and_photo(self, price, photoname=None):
+        if self.photo_is_needed and photoname:
+            self.photo_path = photoname
+            self.save()
+            print(f'Фото {photoname} добавлено для продукта (id={self.id})')
         if price:
             self.prices.create(price=price)
-            if photoname:
-                self.photo_path = photoname
-                self.save()
             return True
         else:
-            print(f'Цена - {price}  и фото - {photoname} '
-                  f'не были добавлены для сайта (id={self.id})')
+            print(f'Цена {price} добавлена для продукта (id={self.id})')
             return False
 
     @classmethod
@@ -54,6 +54,12 @@ class Product(models.Model):
         except cls.DoesNotExist as e:
             print('Сайт с таким id не был найден. Удаление не выполнено.')
             return None
+
+    @property
+    def photo_is_needed(self):
+        """Нужно ли фото для данного продукта, зависит от заполненности поля
+        photo_path"""
+        return not self.photo_path
 
 
 class Price(models.Model):

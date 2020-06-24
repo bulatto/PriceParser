@@ -20,10 +20,15 @@ parser_classes = {
 class Parsing:
     """Основной класс, соединяющий парсеры с сайтами"""
 
-    def __init__(self, url):
+    def __init__(self, url, photo_is_needed=True):
+        """
+        :param url: Ссылка на сайт
+        :param photo_is_needed: Нужно ли сохранять фото
+        """
         assert url, 'Url не должен быть пустым!'
 
         self.url = url
+        self.photo_is_needed = photo_is_needed
         self.site_config = self.get_site_config()
         self.parser = self.get_parser_class(self.site_config.parser_type)(url)
 
@@ -59,7 +64,8 @@ class Parsing:
         ]
         return self.parser.parse(data_for_parsing)
 
-    @staticmethod
-    def photo_processing(string):
-        success, photo_path, _ = PhotoDownloader(string).download()
+    def photo_processing(self, string):
+        photo_path = ''
+        if self.photo_is_needed:
+            success, photo_path, _ = PhotoDownloader(string).download()
         return photo_path
