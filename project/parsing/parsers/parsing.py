@@ -2,6 +2,7 @@ import re
 from urllib.parse import urlparse
 
 from parsing.enum import PageParserEnum
+from parsing.parsers.helpers import price_processing
 from parsing.parsers.photo_downloader import PhotoDownloader
 from parsing.parsers.requests_parser import RequestsPageParser
 from parsing.parsers.selenium_parser import SeleniumPageParser
@@ -47,55 +48,16 @@ class Parsing:
         raise UnsupportedSiteUrl(base_url)
 
     def parse(self):
-        """Метод запуска и контроля парсинга. Возвращает данные в результате
-        выполнения parse_data"""
-
-        # TODO: проверить соединение с сайтом,
-        # только после этого приступать к парсингу
-        # (также удостовериться, что ссылка правильная)
-        try:
-            self.parser.open()
-            parsing_result = self.parse_data()
-            self.parser.close()
-            return parsing_result
-        except BaseParsingException as error:
-            if self.parser:
-                self.parser.close()
-            raise error
-
-    def parse_data(self):
-        """Метод парсинга данных"""
-        price = self.get_data_from_parser(
-            self.site_config.price_src, self.price_processing)
-        photo_name = self.get_data_from_parser(
-            self.site_config.photo_src, self.photo_processing)
-        return price, photo_name
-
-    def get_data_from_parser(self, sequence, processing_func=None):
-        """Получение информации из последовательности с последующей обработкой
-        функцией processing_func
+        """Вызвает функцию парсинга у парсера и передаёт ему необходимые
+        данные для обработки
         """
-        result = self.parser.parse_sequence(sequence)
-        final_result = processing_func(result) if processing_func else result
-        return final_result
-
-    @staticmethod
-    def price_processing(string):
-        rub_strings = ['руб.', '₽', 'р.', 'руб']
-        positions = [string.find(st) for st in rub_strings]
-        pos = next((pos for pos in positions if pos >= 0), None)
-        if pos:
-            string = string[:pos]
-        result = re.search(r'\d{1,3}\s*\d{2,3}([\.,](?:\d{1,2}))?', string)
-        if result:
-            price_string = result.string.replace(',', '.').replace(' ', '')
-            try:
-                price = float(price_string)
-                return price
-            except ValueError:
-                pass
-
-        return None
+        # Список кортежей, где первый элемент - последовательность парсинга,
+        # второй - функция, применяемая после получения результата со страницы
+        data_for_parsing = [
+            (self.site_config.price_src, price_processing),
+            (self.site_config.photo_src, self.photo_processing),
+        ]
+        return self.parser.parse(data_for_parsing)
 
     @staticmethod
     def photo_processing(string):

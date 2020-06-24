@@ -42,6 +42,45 @@ class PageParser(metaclass=ABCMeta):
         """
         pass
 
+    def parse(self, data_for_parsing: list) -> list:
+        """Основной метод для запуска парсинга
+        :param data_for_parsing: Список кортежей, где первый элемент -
+            последовательность парсинга, второй - функция, применяемая после
+            получения результата со страницы
+        :return: Список необходимых данных со страницы
+        :raise: BaseParsingException
+        """
+        # TODO: проверить соединение с сайтом,
+        # только после этого приступать к парсингу
+        # (также удостовериться, что ссылка правильная)
+        try:
+            self.open()
+            parsing_result = self.parse_data(data_for_parsing)
+            self.close()
+            return parsing_result
+        except BaseParsingException as error:
+            if self:
+                self.close()
+            raise error
+
+    def parse_data(self, data_for_parsing):
+        """Для каждого элемента вызывает метод для парсинга самого элемента
+        со страницы и функцию его последующей обработки
+        """
+        result_data = []
+        for sequence, post_processing_func in data_for_parsing:
+            result_data.append(
+                self.process_data(sequence, post_processing_func))
+        return result_data
+
+    def process_data(self, sequence, processing_func=None):
+        """Получение информации из последовательности с последующей обработкой
+        функцией processing_func
+        """
+        result = self.parse_sequence(sequence)
+        final_result = processing_func(result) if processing_func else result
+        return final_result
+
     def parse_sequence(self, parsing_sequence):
         """Обработка последовательности элементов и получение информации со
         страницы. В случае если для элемента определено несколько
