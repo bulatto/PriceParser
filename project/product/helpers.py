@@ -44,7 +44,7 @@ def get_sites_and_url_form(page=1):
     for product in products_list:
         product.has_running_task = product.id in products_with_running_task
         last_price_obj = product.prices.first()
-        product.price_in_rub = (f'{last_price_obj.price} руб.'
+        product.price_in_rub = (f'{last_price_obj.price}'
                                 if last_price_obj else '-')
         product.photo_path = get_photo_path(product.photo_path)
 

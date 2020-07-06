@@ -1,15 +1,12 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Парсер цен</title>
-    <link rel="stylesheet" type="text/css" href="{% static "css/index.css" %}">
-</head>
-<body>
-<div class="container">
-    <div id="add_ref"><a id="a_add_ref" href="{% url 'product:add_ref' %}">Добавить ссылки</a></div>
-    <div id="goods"><a id="a_goods" href="{% url 'product:show_goods' %}">Просмотр товаров</a></div>
-</div>
-</body>
-</html>
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block hero_caption %}
+<section class="caption">
+	<h2 class="caption">Отслеживание цен <br>на любимые товары</h2>
+</section>
+{% endblock %}

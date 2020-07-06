@@ -39,7 +39,7 @@ if not os.path.exists(LOGS_DIR):
 GOODS_IMAGE_PATH = os.path.join(BASE_DIR, "static", 'goods_images')
 if not os.path.exists(GOODS_IMAGE_PATH):
     os.mkdir(GOODS_IMAGE_PATH)
-DEFAULT_IMG_NAME = os.path.join(GOODS_IMAGE_PATH, 'default.jpg')
+DEFAULT_IMG_NAME = 'default.jpg'
 
 
 # Quick-start development settings - unsuitable for production
@@ -51,7 +51,7 @@ SECRET_KEY = 'bwnd7+*dlx*(vux25zj3d$e7p5o0j(lcd34zo^^o%+^4g5wjh)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -91,6 +91,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'product.context_processors.add_navigation_links',
             ],
         },
     },

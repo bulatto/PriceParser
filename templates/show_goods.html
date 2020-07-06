@@ -1,79 +1,32 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Просмотр ссылок</title>
-    <link rel="stylesheet" type="text/css" href="{% static "css/show_goods.css" %}">
-</head>
-<style>
-#{{ form.url.auto_id }} {
-width: 100%;
-}
-</style>
-<body>
-<h1 class="center">Ссылки на сайты:</h1>
-{% if has_message %}
-<script>alert("{{ message }}");</script>
-{% endif %}
 
-{% if products %}
-<table>
-    <tr>
-        <th>Фото</th>
-        <th>Ссылка (url)</th>
-        <th>Цена</th>
-    </tr>
-    {% for product in products %}
-    <tr>
-        <td><img style="height:40px;" src="{% static product.photo_path %}"></td>
-        <td><a href="{{ product.url }}">{{ product.url }}</a></td>
-        <td>{{ product.price_in_rub }}</td>
-        <td>
-            {% if not product.has_running_task %}
-                <form method="POST" action="{% url 'parsing:price_task' product.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="run_task_btn">Обновить цену</button>
-                </form>
-            {% else %}
-            Задача запущена
-            {% endif %}
-        </td>
-            <td>
-        <form method="POST" action="{% url 'product:delete_product' product.id %}">
-            {% csrf_token %}
-            <button type="submit" class="delete_btn">Удалить</button>
-        </form>
-    </td>
-    </tr>
-    {% endfor %}
+{% block search %}
+<section class="useful_panel">
+    <div class="wrapper"></div>
+</section>
+{% endblock %}
 
-    <form method="POST" action="{% url 'product:add_product_url' %}">
-        {% csrf_token %}
-        <tr>
-            <td colspan="2">{{ form.url }}</td>
-            <td colspan="3">
-                <button type="submit" class="btn">Добавить новую запись</button>
-            </td>
-        </tr>
-    </form>
-</table>
-{% endif %}
-
-{% if products %}
-<div id="goods_container">
-    {% for product in products %}
-    <a href="{{product.url}}">
-    <div class="goods">
-        <div class="photo">
-            <img class="good_img" src="{% static product.photo_path %}">
+{% block products_listings %}
+<section class="listings">
+    <div class="wrapper">
+        <ul class="products_list">
+            {% for product in products %}
+            <li>
+                <a href="#">
+                    <img src="{% static product.photo_path %}" alt="" title="" class="product_img"/>
+                </a>
+                <span class="price"><span>{{ product.price_in_rub }}</span> руб.</span>
+                <div class="product_details">
+                    <h1><a href="{{ product.url }}">Название товара</a></h1>
+                    <h2>Описание</h2>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="more_listing">
+            <a href="#" class="more_listing_btn">View More Listings</a>
         </div>
-        <div class="description center"><b>{{product.price_in_rub}}</b></div>
     </div>
-    </a>
-    {% endfor %}
-</div>
-{% endif %}
-<div><p class="center"><a href="{% url 'index' %}">Вернуться на главную страницу</a></p></div>
-</body>
-</html>
+</section>
+{% endblock %}

@@ -1,35 +1,25 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+header {
+    background: rgba(28, 54, 85, .6);
 }
-.container{min-height: 100%;}
-.container div{
-    position: absolute;
-    top: 50%;
-    width:50%;
-    margin-top: -29px;
+
+.hero{
+    background: url('../img/main_image.jpg') no-repeat bottom center;
 }
-#add_ref{
-    left:0px;
+
+.hero {
+    height: 900px;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
 }
-#goods{
-    left:50%;
+
+@media (max-width: 1500px)
+.hero {
+    height: 800px;
 }
-#a_goods{
-    background: rgb(99, 99, 255);
-}
-#a_add_ref{
-    background: rgb(247, 104, 104);
-}
-a{
-    display: block;
-    text-decoration: none;
-    text-align: center;
-    font-size: 50px;
-    color: black;
-    width:70%;
-    margin:auto;
-    border: 5px solid black;
+
+@media (max-width: 800px)
+.hero {
+    height: 600px;
 }

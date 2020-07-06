@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+	<title>{% block title %}Сайт для парсинга{% endblock %}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+
+	{% block all_styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base/responsive.css' %}">
+	{% block styles %}{% endblock %}
+	{% endblock %}
+
+	{% block all_javascript %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+	{% block javascript %}{% endblock %}
+	{% endblock %}
+</head>
+<body>
+	<section class="hero">
+		<header>
+			<div class="wrapper">
+				<a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}" class="logo" alt="" title=""/></a>
+				<a href="#" class="hamburger"></a>
+				<nav>
+					<ul>
+						{% for name, link in navigation_links %}
+							<li><a href="{{ link }}">{{ name }}</a></li>
+						{% endfor %}
+					</ul>
+					<a href="#" class="login_btn">Login</a>
+				</nav>
+			</div>
+		</header>
+
+		{% block hero_caption %}{% endblock %}
+	</section>
+
+	{% block search %}{% endblock %}
+	{% block products_listings %}{% endblock %}
+
+	{% block footer %}
+	<footer>
+		<div class="wrapper footer">
+			<ul>
+				<li class="links">
+					<ul>
+						{% for name, link in navigation_links %}
+							<li><a href="{{ link }}">{{ name }}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</footer>
+	{% endblock %}
+</body>
+</html>
