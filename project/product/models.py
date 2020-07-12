@@ -3,9 +3,11 @@ from django.db import models
 from django.db import transaction
 
 from common.helpers import get_datetime_string
+from common.models import CreatedDateMixin
+from common.models import DateAwareMixin
 
 
-class Product(models.Model):
+class Product(DateAwareMixin):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='product',
         verbose_name='Пользователь')
@@ -15,7 +17,7 @@ class Product(models.Model):
         verbose_name='Изображение товара')
 
     def __str__(self):
-        return self.url
+        return f'(id={self.id}) {self.url}'
 
     class Meta:
         verbose_name = 'Товар'
@@ -62,12 +64,11 @@ class Product(models.Model):
         return not self.photo_path
 
 
-class Price(models.Model):
+class Price(CreatedDateMixin):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='prices',
         verbose_name='Ссылка на товар')
     price = models.FloatField(verbose_name='Цена')
-    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
 
     def __str__(self):
         return (f'Цена на товар(id={str(self.product.id)}, '
