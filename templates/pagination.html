@@ -1,0 +1,21 @@
+{% load common_template_tags %}
+<div class="pagination">
+    <div class="pagination-links">
+        {% with this_url=request.get_full_path %}
+
+            {% if page.has_previous %}
+            <a href="{% add_param_to_url this_url 'page' page.previous_page_number %}">Предыдущая страница</a>
+            {% endif %}
+
+            {% for page_num in page.page_nums_for_html %}
+                <a href="{% add_param_to_url this_url 'page' page_num %}"
+                   {% if page_num == page.number %} class="active_page" {% endif %}>{{ page_num }}</a>
+            {% endfor %}
+
+            {% if page.has_next %}
+            <a href="{% add_param_to_url this_url 'page' page.next_page_number %}">Следующая страница</a>
+            {% endif %}
+
+        {% endwith %}
+    </div>
+</div>

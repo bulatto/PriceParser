@@ -374,7 +374,29 @@ footer .copyrights a.ph_link{
 
 
 
+/*  Pagination  */
+div .pagination-links {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.pagination-links a.active_page {
+    background-color: #95badf;
+    color: white;
+}
+
+.pagination-links a:hover:not(.active) {background-color: #ddd;}
+
+.pagination-links a {display: inline;}
+
+.pagination-links a{
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+}
 
 
 

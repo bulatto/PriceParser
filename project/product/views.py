@@ -2,14 +2,19 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from common.helpers import pagination_page
+from product.models import Product
 from .forms import UrlForm
-from .helpers import add_url
+from .helpers import add_url, GOODS_ON_PAGE
 from .helpers import delete_site
 from .helpers import get_sites_and_url_form
 
 
 def show_goods(request, *args, **kwargs):
-    data = get_sites_and_url_form()
+    products_query = Product.products_with_prices.filter(user=request.user)
+    products = pagination_page(
+        products_query, request.GET.get('page'), GOODS_ON_PAGE)
+    data = get_sites_and_url_form(products)
     return render(request, 'show_goods.html', context=data)
 
 

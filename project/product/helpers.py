@@ -42,25 +42,21 @@ def convert_price_to_string(price):
         return "{:.2f}".format(price)
 
 
-def get_sites_and_url_form(page=1):
+def get_sites_and_url_form(products):
     """Получение данных для страницы со всеми товарами"""
-    assert page > 0, 'Номер страницы должен быть больше нуля'
-
-    products = Product.products_with_prices.all()
-    products_list = list(products[:page*GOODS_ON_PAGE])
 
     # Определение продуктов с запущенными задачами
-    product_ids = [product.id for product in products_list]
+    product_ids = [product.id for product in products]
     products_with_running_task = frozenset(RunningTask.objects.filter(
         product__in=product_ids, is_active=True).values_list(
         'product_id', flat=True))
 
-    for product in products_list:
+    for product in products:
         product.has_running_task = product.id in products_with_running_task
         product.price_str = convert_price_to_string(product.current_price)
         product.photo_path = get_photo_path(product.photo_path)
 
-    return {'products': products_list, 'form': UrlForm()}
+    return {'products': products, 'form': UrlForm()}
 
 
 def add_url(url):

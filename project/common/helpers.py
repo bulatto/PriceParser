@@ -1,5 +1,10 @@
 import datetime
 import os
+import urllib.parse as urlparse
+
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
 
 from config.settings.base import BASE_DIR
 
@@ -46,3 +51,49 @@ def check_parentheses_in_string(string):
                     close_brackets.index(ch)]):
                 return False
     return not parentheses
+
+
+def pagination_page(objects, page, objects_on_page, page_dif=3):
+    """Получение объекта страницы с объектами
+
+    :param objects: Запрос к модели
+    :param page: Номер страницы
+    :param objects_on_page: Количество объектов на странице
+    :param page_dif: Количество страниц, которое будет отображено на сайте,
+        слева и справа от текущей страницы
+
+    :return: Объект пагинации
+    """
+
+    paginator = Paginator(objects, objects_on_page)
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # Если страница не является целым числом, поставим первую страницу
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # Если страница больше максимальной,
+        # возврат последнюю страницу результатов
+        page_obj = paginator.page(paginator.num_pages)
+
+    page_obj.page_nums_for_html = (
+        p for p in paginator.page_range if abs(page_obj.number - p) <= page_dif)
+    return page_obj
+
+
+def add_get_param_to_url(url, param_dict):
+    """Добавляется к запросу необходимые GET параметры
+
+    :param url: URL запроса
+    :param param_dict: Словарь с параметрами для добавления
+
+    :return: Новый получившийся URL адрес
+    """
+    url_parts = list(urlparse.urlparse(url))
+    query_params_dict = dict(urlparse.parse_qsl(url_parts[4]))
+    # Добавление параметра к другими параметрам
+    query_params_dict.update(param_dict)
+    url_parts[4] = urlparse.urlencode(query_params_dict)
+    # Готовый URL
+    new_url = urlparse.urlunparse(url_parts)
+    return new_url
