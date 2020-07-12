@@ -16,7 +16,9 @@
                 <a href="#">
                     <img src="{% static product.photo_path %}" alt="" title="" class="product_img"/>
                 </a>
-                <span class="price"><span>{{ product.price_in_rub }}</span> руб.</span>
+                <span class="price">
+                    <span>{{ product.price_str|default_if_none:'-' }}
+                    </span> руб.</span>
                 <div class="product_details">
                     <h1><a href="{{ product.url }}">Название товара</a></h1>
                     <h2>Описание</h2>

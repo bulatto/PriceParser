@@ -1,8 +1,5 @@
 import os
 
-from django.db.models import Prefetch
-
-from common.helpers import relative_path
 from config.settings.base import DEFAULT_IMG_NAME
 from config.settings.base import GOODS_IMAGE_PATH
 from parsing.models import RunningTask
@@ -27,12 +24,29 @@ def get_photo_path(photo_name=None):
     return f'{prefix}/{photo_name}'
 
 
+def convert_price_to_string(price):
+    """Преобразует вещественную цену в строку (при возможности). Если число
+    целое, то дробная часть откидывается, иначе идёт округление до 2 знаков,
+    после запятой. Если на вход подаётся None, возвращается пустая строка
+
+    :param price: Цена в вещественном виде
+    :return: Строка для вывода
+    """
+    assert price is None or isinstance(price, float)
+
+    if not price:
+        return ''
+    elif price % 1 == 0:
+        return "{:.0f}".format(price)
+    else:
+        return "{:.2f}".format(price)
+
+
 def get_sites_and_url_form(page=1):
     """Получение данных для страницы со всеми товарами"""
     assert page > 0, 'Номер страницы должен быть больше нуля'
 
-    products = Product.objects.all().prefetch_related(
-        Prefetch('prices', queryset=Price.objects.order_by('-created')))
+    products = Product.products_with_prices.all()
     products_list = list(products[:page*GOODS_ON_PAGE])
 
     # Определение продуктов с запущенными задачами
@@ -43,9 +57,7 @@ def get_sites_and_url_form(page=1):
 
     for product in products_list:
         product.has_running_task = product.id in products_with_running_task
-        last_price_obj = product.prices.first()
-        product.price_in_rub = (f'{last_price_obj.price}'
-                                if last_price_obj else '-')
+        product.price_str = convert_price_to_string(product.current_price)
         product.photo_path = get_photo_path(product.photo_path)
 
     return {'products': products_list, 'form': UrlForm()}

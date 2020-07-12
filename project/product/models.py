@@ -5,6 +5,7 @@ from django.db import transaction
 from common.helpers import get_datetime_string
 from common.models import CreatedDateMixin
 from common.models import DateAwareMixin
+from product.model_managers import ProductPriceManager
 
 
 class Product(DateAwareMixin):
@@ -15,6 +16,7 @@ class Product(DateAwareMixin):
     photo_path = models.CharField(
         max_length=200, null=True, blank=True,
         verbose_name='Изображение товара')
+    products_with_prices = ProductPriceManager()
 
     def __str__(self):
         return f'(id={self.id}) {self.url}'
