@@ -174,7 +174,6 @@ class PageParser(metaclass=ABCMeta):
         args, kwargs = self.get_param_for_identifier_function(
             function, parsing_element)
         result = function(*args, **kwargs)
-        print(f'Результат парсинга={result}')
         if not result:
             raise ElementNotFoundedOnPage(parsing_element)
 

@@ -19,6 +19,7 @@ class Product(DateAwareMixin):
     photo_path = models.CharField(
         max_length=200, null=True, blank=True,
         verbose_name='Изображение товара')
+    objects = models.Manager()
     products_with_prices = ProductPriceManager()
 
     def __str__(self):
@@ -45,7 +46,7 @@ class Product(DateAwareMixin):
             self.prices.create(price=price)
             return True
         else:
-            print(f'Цена {price} добавлена для продукта (id={self.id})')
+            print(f'Цена {price} не была добавлена для продукта (id={self.id})')
             return False
 
     @classmethod
@@ -60,7 +61,6 @@ class Product(DateAwareMixin):
             return True
         except cls.DoesNotExist as e:
             print('Сайт с таким id не был найден. Удаление не выполнено.')
-            return None
 
     @property
     def photo_is_needed(self):

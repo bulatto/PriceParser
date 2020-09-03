@@ -23,11 +23,10 @@
                 <a href="#">
                     <img src="{% static product.photo_path %}" alt="" title="" class="product_img"/>
                 </a>
-                <span class="price">
-                    <span>{{ product.price_str|default_if_none:'-' }}
-                    </span> руб.</span>
+                <a href="{% url 'parsing:price_task' product.id %}"><span class="price"><span>{{ product.price_str|default_if_none:'-' }}</span> руб.</span></a>
+
                 <div class="product_details">
-                    <h1><a href="{{ product.url }}">Название товара</a></h1>
+                    <h1><a href="{{ product.url }}">{{ product.url }}</a></h1>
                     <h2>Описание</h2>
                 </div>
             </li>

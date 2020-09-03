@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 from django.core.exceptions import ImproperlyConfigured
+from kombu import Queue
+import djcelery
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -42,6 +44,21 @@ if not os.path.exists(GOODS_IMAGE_PATH):
 DEFAULT_IMG_NAME = 'default.jpg'
 
 
+# Celery
+djcelery.setup_loader()
+queues = (
+    'default',
+    'requests',
+    'selenium',
+)
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_QUEUES = [Queue(q, routing_key=q) for q in queues]
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_DEFAULT_ROUTING_KEY = 'default'
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -66,6 +83,7 @@ INSTALLED_APPS = [
     'common',
     'product',
     'parsing',
+    'djcelery'
 ]
 
 MIDDLEWARE = [

@@ -2,7 +2,7 @@ import time
 
 from django.db import transaction
 
-from parsing.parsers import Parsing
+from parsing.parsers import Parsing, ElementNotFoundedOnPage
 from product.models import Product
 
 from .models import RunningTask
@@ -51,7 +51,10 @@ def run_price_task(product_id):
         return
 
     with SiteTaskContextManager(product=product):
-        price, photo_name = Parsing(
-            product.url, product.photo_is_needed).parse()
-        print(f'Price - {price}; Photo - {photo_name}')
-        product.add_price_and_photo(price, photo_name)
+        try:
+            price, photo_name = Parsing(
+                product.url, product.photo_is_needed).parse()
+            print(f'Price - {price}; Photo - {photo_name}')
+            product.add_price_and_photo(price, photo_name)
+        except ElementNotFoundedOnPage as e:
+            print(e)
