@@ -97,3 +97,18 @@ def add_get_param_to_url(url, param_dict):
     # Готовый URL
     new_url = urlparse.urlunparse(url_parts)
     return new_url
+
+
+def get_sort_dir(sort_dir, need_to_invert=False):
+    """Определяет порядок сортировки
+    :param sort_dir: Строка с направление сортировки (asc или desc)
+    :param need_to_invert: Есть ли необходимость инвертировать сортировку
+
+    :return: Строка с направлением сортировкой (инвертированное направление,
+        если need_to_invert==True)
+    """
+    # Если явно указано desc, тогда desc, иначе asc
+    sort_dir = 'desc' if sort_dir == 'desc' else 'asc'
+    if need_to_invert:
+        return 'desc' if sort_dir == 'asc' else 'asc'
+    return sort_dir

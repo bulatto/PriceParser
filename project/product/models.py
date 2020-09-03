@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction
@@ -5,6 +7,7 @@ from django.db import transaction
 from common.helpers import get_datetime_string
 from common.models import CreatedDateMixin
 from common.models import DateAwareMixin
+from config.settings.base import GOODS_IMAGE_PATH
 from product.model_managers import ProductPriceManager
 
 
@@ -62,8 +65,9 @@ class Product(DateAwareMixin):
     @property
     def photo_is_needed(self):
         """Нужно ли фото для данного продукта, зависит от заполненности поля
-        photo_path"""
-        return not self.photo_path
+        photo_path и корректности указанного пути"""
+        return not self.photo_path or not os.path.exists(
+            os.path.join(GOODS_IMAGE_PATH, self.photo_path))
 
 
 class Price(CreatedDateMixin):

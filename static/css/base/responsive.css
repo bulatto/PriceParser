@@ -373,6 +373,28 @@ footer .copyrights a.ph_link{
 }
 
 
+/*  Sorting  */
+.sorting_list {
+    padding-top: 10px;
+}
+
+.sorting_list a, span {
+    margin-left: 20px;
+}
+
+a.sorting {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px dashed #8b8b8b;
+}
+
+a.sorting.selected {
+    color: #3a6eb7;
+    border-color: #3a6eb7;
+}
+
+
+
 
 /*  Pagination  */
 div .pagination-links {

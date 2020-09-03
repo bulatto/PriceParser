@@ -3,7 +3,6 @@ import os
 from config.settings.base import DEFAULT_IMG_NAME
 from config.settings.base import GOODS_IMAGE_PATH
 from parsing.models import RunningTask
-from product.forms import UrlForm
 from product.models import Product, Price
 
 
@@ -42,7 +41,7 @@ def convert_price_to_string(price):
         return "{:.2f}".format(price)
 
 
-def get_sites_and_url_form(products):
+def prepare_products(products):
     """Получение данных для страницы со всеми товарами"""
 
     # Определение продуктов с запущенными задачами
@@ -56,7 +55,7 @@ def get_sites_and_url_form(products):
         product.price_str = convert_price_to_string(product.current_price)
         product.photo_path = get_photo_path(product.photo_path)
 
-    return {'products': products, 'form': UrlForm()}
+    return {'products': products}
 
 
 def add_url(url):

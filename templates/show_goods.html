@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+{% load common_template_tags %}
 
 {% block search %}
 <section class="useful_panel">
-    <div class="wrapper"></div>
+    <div class="sorting_list">
+        <span class="sorting_links">Сортировка:
+        {% for s in sortings %}
+            <a class="{{ s.css_code }}" href="{{ s.url }}"> {{ s.name }}</a>
+        {% endfor %}
+        </span>
+    </div>
 </section>
 {% endblock %}
 
