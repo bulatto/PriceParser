@@ -37,7 +37,6 @@ SELENIUM_WEBDRIVER_FILE = selenium_section.get('WEBDRIVER_FILE')
 if not SELENIUM_WEBDRIVER_FILE:
     raise ImproperlyConfigured(
         f'Не определён параметр WEBDRIVER_FILE для парсера Selenium')
-elif not os.path.exists(os.path.join(
-        BASE_DIR, 'additional_files', SELENIUM_WEBDRIVER_FILE)):
+elif not os.path.exists(SELENIUM_WEBDRIVER_FILE):
     raise ImproperlyConfigured(
         f'Файл, описанный в WEBDRIVER_FILE для парсера Selenium, отсутствует')

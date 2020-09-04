@@ -24,9 +24,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 # Путь до папки проекта
 PROJECT_DIR = os.path.join(BASE_DIR, 'project')
 
-# Путь до папки с дополнительными файлами
-ADDITIONAL_FILES_DIR = os.path.join(BASE_DIR, 'additional_files')
-
 # Путь до папки с основными файлами проекта
 PROJECT_SETTINGS_DIR = os.getenv('PROJECT_SETTINGS_DIR', None)
 if not PROJECT_SETTINGS_DIR or not os.path.exists(PROJECT_SETTINGS_DIR):

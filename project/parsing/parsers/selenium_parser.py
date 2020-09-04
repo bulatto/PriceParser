@@ -1,24 +1,21 @@
-import os
-
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.functional import cached_property
 from selenium import webdriver
+from selenium.common.exceptions import SessionNotCreatedException
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.remote.webelement import WebElement
 
-from config.settings.base import ADDITIONAL_FILES_DIR
 from parsing.enum import IdentifierEnum
-from parsing.parsers.base_parser import PageParser
-from parsing.parsers.helpers import get_num_of_list
-from parsing.parsers.helpers import open_parser
-from parsing.parsers.selenium_settings import SELENIUM_LOGS_FILE
-from parsing.parsers.selenium_settings import SELENIUM_VISIBLE
-from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_FILE
-from parsing.parsers.selenium_settings import SELENIUM_WEBDRIVER_TYPE
 
+from .base_parser import PageParser
 from .enum import SeleniumProgramEnum
 from .exceptions import *
+from .helpers import get_num_of_list
+from .helpers import open_parser
+from .selenium_settings import SELENIUM_LOGS_FILE
+from .selenium_settings import SELENIUM_VISIBLE
+from .selenium_settings import SELENIUM_WEBDRIVER_FILE
+from .selenium_settings import SELENIUM_WEBDRIVER_TYPE
 
 
 class SeleniumSettings:
@@ -79,9 +76,7 @@ class SeleniumSettings:
     @property
     def executable_path(self):
         """Путь до исполняемого файла парсера"""
-        return dict(executable_path=r'{}'.format(
-                os.path.join(ADDITIONAL_FILES_DIR,
-                             self.current_settings['path'])))
+        return dict(executable_path=self.current_settings['path'])
 
     @property
     def service_log_path(self):
@@ -132,7 +127,13 @@ class SeleniumPageParser(PageParser):
         """Возвращает веб-драйвер для парсера"""
         settings_dict = self.setting.get_dict()
         webdriver_class = self.setting.webdriver_class
-        driver = webdriver_class(**settings_dict)
+
+        try:
+            driver = webdriver_class(**settings_dict)
+        except SessionNotCreatedException as e:
+            raise BaseParsingException(
+                'Веб-драйвер не смог создать сессию. '
+                'Обратитесь к администратору')
         return driver
 
     def __init__(self, url):

@@ -2,6 +2,10 @@ class BaseParsingException(Exception):
     """Базовый класс для исключений, связанных с парсингом"""
     message = 'Произошла ошибка!'
 
+    def __init__(self, message):
+        super(BaseParsingException, self).__init__()
+        self.message = message
+
     def __str__(self):
         return self.message
 
