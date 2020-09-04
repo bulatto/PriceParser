@@ -2,7 +2,8 @@ import time
 
 from django.db import transaction
 
-from parsing.parsers import Parsing, ElementNotFoundedOnPage
+from parsing.parsers import ElementNotFoundedOnPage
+from parsing.parsers import Parsing
 from product.models import Product
 
 from .models import RunningTask

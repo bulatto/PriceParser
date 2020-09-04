@@ -1,17 +1,24 @@
 from collections import namedtuple
 
-from django.db.models import Case, When, Q, BooleanField
+from django.db.models import BooleanField
+from django.db.models import Case
+from django.db.models import Q
+from django.db.models import When
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.base import View
 
-from common.helpers import pagination_page, get_sort_dir, add_get_param_to_url
-from product.models import Product
+from common.helpers import add_get_param_to_url
+from common.helpers import get_sort_dir
+from common.helpers import pagination_page
+
 from .forms import UrlForm
-from .helpers import add_url, GOODS_ON_PAGE
+from .helpers import GOODS_ON_PAGE
+from .helpers import add_url
 from .helpers import delete_site
 from .helpers import prepare_products
+from .models import Product
 
 
 class ShowGoodsView(View):

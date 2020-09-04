@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.views.generic import TemplateView
 from django.urls import include
 from django.urls import path
+from django.views.generic import TemplateView
 
 from config.settings.dev import DEBUG
 

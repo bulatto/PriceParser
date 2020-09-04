@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from parsing.tasks import run_celery_price_task
+
 from .helpers import run_price_task
 
 

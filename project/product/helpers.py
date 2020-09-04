@@ -3,7 +3,8 @@ import os
 from config.settings.base import DEFAULT_IMG_NAME
 from config.settings.base import GOODS_IMAGE_PATH
 from parsing.models import RunningTask
-from product.models import Product, Price
+from product.models import Price
+from product.models import Product
 
 
 GOODS_ON_PAGE = 30

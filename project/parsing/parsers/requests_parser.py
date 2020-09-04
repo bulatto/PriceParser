@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from bs4 import element
-import requests
 from fake_useragent import UserAgent
+import requests
 
 from parsing.enum import IdentifierEnum
 from parsing.parsers import BaseParsingException

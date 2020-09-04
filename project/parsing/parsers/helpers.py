@@ -1,6 +1,6 @@
-import re
 from time import sleep
 from typing import Optional
+import re
 
 from django.core.exceptions import ImproperlyConfigured
 

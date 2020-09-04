@@ -8,7 +8,8 @@ from common.helpers import get_datetime_string
 from common.models import CreatedDateMixin
 from common.models import DateAwareMixin
 from config.settings.base import GOODS_IMAGE_PATH
-from product.model_managers import ProductPriceManager
+
+from .model_managers import ProductPriceManager
 
 
 class Product(DateAwareMixin):

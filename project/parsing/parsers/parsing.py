@@ -1,5 +1,5 @@
-import re
 from urllib.parse import urlparse
+import re
 
 from parsing.enum import PageParserEnum
 from parsing.parsers.helpers import price_processing

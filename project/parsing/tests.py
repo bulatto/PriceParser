@@ -1,4 +1,5 @@
 from urllib.parse import urlparse
+
 from django.test import TestCase
 
 from common.helpers import check_parentheses_in_string
