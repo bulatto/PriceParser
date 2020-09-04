@@ -20,19 +20,23 @@
         <ul class="products_list">
             {% for product in products %}
             <li>
-                <a href="#">
-                    <img src="{% static product.photo_path %}" alt="" title="" class="product_img"/>
-                </a>
-                <a href="{% url 'parsing:price_task' product.id %}"><span class="price"><span>{{ product.price_str|default_if_none:'-' }}</span> руб.</span></a>
-
-                <div class="product_details">
-                    <h1><a href="{{ product.url }}">{{ product.url }}</a></h1>
-                    <h2>Описание</h2>
+                <div class="product_item">
+                    <div class="item_img">
+                        <a href="#"><img
+                                src="{% static product.photo_path %}"
+                                alt="" title=""
+                                class="product_img"/></a>
+                        <!--<a href="{% url 'parsing:price_task' product.id %}"><span
+                                class="price"><span>{{ product.price_str|default_if_none:'-' }}</span> руб.</span></a>-->
+                    </div>
+                    <div class="product_details">
+                        <h1><a href="{{ product.url }}">{{ product.price_str|default_if_none:'-' }} руб.</a></h1>
+                        <a class="product_ref" href="{{ product.url }}">{{ product.url|truncatechars:90 }}</a>
+                    </div>
                 </div>
             </li>
             {% endfor %}
         </ul>
-
         {% include "pagination.html" with page=products %}
     </div>
 </section>
