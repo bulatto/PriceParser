@@ -16,3 +16,4 @@ fake-useragent==0.1.11
 celery==3.1.25
 django-celery==3.3.1
 redis==2.10.6
+flower==0.9.5
