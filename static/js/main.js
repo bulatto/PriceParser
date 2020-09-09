@@ -4,6 +4,5 @@ $(document).ready(function(){
 		e.preventDefault();
 		$(this).toggleClass('opned');
 		$('header nav').toggleClass('active');
-		
 	});
 });

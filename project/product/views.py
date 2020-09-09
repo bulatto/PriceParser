@@ -12,12 +12,14 @@ from django.views.generic.base import View
 from common.helpers import add_get_param_to_url
 from common.helpers import get_sort_dir
 from common.helpers import pagination_page
+from parsing.models import RunningTask
 
 from .forms import UrlForm
 from .helpers import GOODS_ON_PAGE
 from .helpers import add_url
+from .helpers import convert_price_to_string
 from .helpers import delete_site
-from .helpers import prepare_products
+from .helpers import get_photo_path
 from .models import Product
 
 
@@ -113,6 +115,23 @@ class ShowGoodsView(View):
                 request.get_full_path(), sort_code, sort_dir))
         return context
 
+    @classmethod
+    def prepare_products(cls, products):
+        """Получение данных для страницы со всеми товарами"""
+
+        # Определение продуктов с запущенными задачами
+        product_ids = [product.id for product in products]
+        products_with_running_task = frozenset(RunningTask.objects.filter(
+            product__in=product_ids, is_active=True).values_list(
+            'product_id', flat=True))
+
+        for product in products:
+            product.has_running_task = product.id in products_with_running_task
+            product.price_str = convert_price_to_string(product.current_price)
+            product.photo_path = get_photo_path(product.photo_path)
+
+        return products
+
     def dispatch(self, request, *args, **kwargs):
         """Основная функция View"""
 
@@ -125,8 +144,11 @@ class ShowGoodsView(View):
         products = pagination_page(
             products_query, request.GET.get('page'), GOODS_ON_PAGE)
 
-        context = prepare_products(products)
-        context.update(self._get_sort_context(request, sort_code, sort_dir))
+        context = {}
+        products_context = dict(products=self.prepare_products(products))
+        sort_context = self._get_sort_context(request, sort_code, sort_dir)
+        for context_dict in [products_context, sort_context]:
+            context.update(context_dict)
 
         return render(request, 'show_goods.html', context=context)
 

@@ -2,6 +2,9 @@
 {% load static %}
 {% load common_template_tags %}
 
+{% block styles %}<link rel="stylesheet" type="text/css" href="{% static 'css/new_url_adding.css' %}">{% endblock %}
+{% block javascript %}<script type="text/javascript" src="{% static 'js/show_goods.js' %}"></script>{% endblock %}
+
 {% block search %}
 <section class="useful_panel">
     <div class="sorting_list">
@@ -11,6 +14,7 @@
         {% endfor %}
         </span>
     </div>
+    {% include 'adding_new_url.html' %}
 </section>
 {% endblock %}
 
@@ -22,15 +26,13 @@
             <li>
                 <div class="product_item">
                     <div class="item_img">
-                        <a href="#"><img
-                                src="{% static product.photo_path %}"
-                                alt="" title=""
-                                class="product_img"/></a>
-                        <!--<a href="{% url 'parsing:price_task' product.id %}"><span
-                                class="price"><span>{{ product.price_str|default_if_none:'-' }}</span> руб.</span></a>-->
+                        <a href="#">
+                            <img src="{% static product.photo_path %}" alt="" title="" class="product_img"/>
+                        </a>
                     </div>
                     <div class="product_details">
-                        <h1><a href="{{ product.url }}">{{ product.price_str|default_if_none:'-' }} руб.</a></h1>
+                        <h1>{% if not product.price_str %}Цена отсутствует{% else %}
+                        {{ product.price_str }} руб.{% endif %}</h1>
                         <a class="product_ref" href="{{ product.url }}">{{ product.url|truncatechars:90 }}</a>
                     </div>
                 </div>

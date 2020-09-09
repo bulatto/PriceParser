@@ -1,0 +1,15 @@
+<div id="add_url_div">
+    <input class="c-checkbox" type="checkbox" id="checkbox">
+    <div class="c-formContainer">
+        <form class="c-form" id="product_adding_form" action="{% url 'product:add_product_url' %}" method="POST" >
+            {% csrf_token %}
+            <input class="c-form__input" id="url_adding_input" name="url" placeholder="URL ссылка"
+                   type="url" required>
+            <label class="c-form__buttonLabel" for="checkbox">
+                <button class="c-form__button" type="submit">Ввести</button>
+            </label>
+            <label class="c-form__toggle" for="checkbox"
+                   data-title="Добавить ссылку"></label>
+        </form>
+    </div>
+</div>
