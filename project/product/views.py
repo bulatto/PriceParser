@@ -49,6 +49,19 @@ class ShowGoodsView(View):
     }
 
     @classmethod
+    def _apply_filtering(cls, products_query, request):
+        """Применение фильтрации к запросу
+
+        :param products_query: Запрос к модели
+        :param request: Обрабатываемый запрос
+        """
+        only_with_photo = request.GET.get('only_with_photo') == 'true'
+        if only_with_photo:
+            products_query = products_query.filter(has_photo=True)
+
+        return products_query
+
+    @classmethod
     def _apply_sorting(cls, products_query, sort_code, sort_dir=None):
         """Применение сортировки к запросу
 
@@ -135,10 +148,13 @@ class ShowGoodsView(View):
     def dispatch(self, request, *args, **kwargs):
         """Основная функция View"""
 
+        # Применение фильтрации
+        products_query = self._apply_filtering(self.queryset, request)
+
         # Применение сортировки
         sort_dir = get_sort_dir(request.GET.get('sort_dir'))
         products_query, sort_code = self._apply_sorting(
-            self.queryset, request.GET.get('sort'), sort_dir)
+            products_query, request.GET.get('sort'), sort_dir)
 
         # Получение части запросов для отображения на текущей странице
         products = pagination_page(

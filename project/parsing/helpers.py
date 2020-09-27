@@ -48,7 +48,7 @@ def run_price_task(product_id):
 
     if RunningTask.has_active_task(product):
         print(f'Задача для обновления цены товара '
-              'с id = {product_id} уже запущена!')
+              f'с id = {product_id} уже запущена!')
         return
 
     with SiteTaskContextManager(product=product):

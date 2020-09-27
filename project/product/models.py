@@ -40,9 +40,14 @@ class Product(DateAwareMixin):
     @transaction.atomic
     def add_price_and_photo(self, price, photoname=None):
         if self.photo_is_needed and photoname:
+            old_photo_name = self.photo_path
             self.photo_path = photoname
             self.save()
             print(f'Фото {photoname} добавлено для продукта (id={self.id})')
+
+            # Удаление старого изображения
+            from .helpers import remove_product_photo
+            remove_product_photo(old_photo_name)
         if price:
             self.prices.create(price=price)
             return True
