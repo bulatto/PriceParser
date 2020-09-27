@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from configparser import ConfigParser
 
 from django.core.exceptions import ImproperlyConfigured
 from kombu import Queue
@@ -28,6 +29,16 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'project')
 PROJECT_SETTINGS_DIR = os.getenv('PROJECT_SETTINGS_DIR', None)
 if not PROJECT_SETTINGS_DIR or not os.path.exists(PROJECT_SETTINGS_DIR):
     raise ImproperlyConfigured('Не задана переменная среды PROJECT_SETTINGS_DIR')
+
+# Файл с настройками проекта
+project_settings_file_name = 'project_settings.conf'
+project_settings_file_path = os.path.join(
+    PROJECT_SETTINGS_DIR, project_settings_file_name)
+if not os.path.exists(project_settings_file_path):
+    raise ImproperlyConfigured('В папке с файлами проекта не найден файл '
+                               f'{project_settings_file_name}')
+project_settings = ConfigParser()
+project_settings.read(project_settings_file_path)
 
 # Путь до папки с логами
 LOGS_DIR = os.path.join(PROJECT_SETTINGS_DIR, 'logs')
@@ -118,9 +129,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': project_settings.get('DATABASE', 'NAME'),
+        'USER': project_settings.get('DATABASE', 'USER'),
+        'PASSWORD': project_settings.get('DATABASE', 'PASSWORD'),
+        'HOST': project_settings.get('DATABASE', 'HOST'),
+        'PORT': project_settings.getint('DATABASE', 'PORT'),
+    },
+    'local_sqlite3': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(PROJECT_SETTINGS_DIR, 'db.sqlite3'),
     }
