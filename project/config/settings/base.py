@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import logger
 import os
 from configparser import ConfigParser
 
@@ -17,6 +18,8 @@ from django.core.exceptions import ImproperlyConfigured
 from kombu import Queue
 import djcelery
 
+
+DEBUG = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
@@ -41,9 +44,11 @@ project_settings = ConfigParser()
 project_settings.read(project_settings_file_path)
 
 # Путь до папки с логами
-LOGS_DIR = os.path.join(PROJECT_SETTINGS_DIR, 'logs')
-if not os.path.exists(LOGS_DIR):
-    os.mkdir(LOGS_DIR)
+LOG_PATH = os.path.join(PROJECT_SETTINGS_DIR, 'logs')
+if not os.path.exists(LOG_PATH):
+    os.mkdir(LOG_PATH)
+# Включение логирования
+logger.init_logging(LOG_PATH, debug_mode=DEBUG)
 
 # Расположение изображений товаров
 GOODS_IMAGE_PATH = os.path.join(BASE_DIR, "static", 'goods_images')
@@ -191,3 +196,78 @@ STATICFILES_DIRS = [
 ]
 
 INTERNAL_IPS = []
+
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'root': {
+#         'level': 'WARNING',
+#         'handlers': [],
+#     },
+#     'formatters': {
+#         'standard': {
+#             'format': (
+#                 '[%(asctime)s] %(levelname)s '
+#                 '[%(name)s:%(lineno)s] %(message)s'
+#             ),
+#             'datefmt': '%Y-%m-%d %H:%M:%S',
+#         },
+#         'red': {
+#             '()': 'kinder.core.utils.formatter.ColorizeFormatter',
+#             'format': (
+#                 '[%(asctime)s] %(levelname)s '
+#                 '[%(name)s:%(lineno)s] %(message)s'
+#             ),
+#             'datefmt': '%Y-%m-%d %H:%M:%S',
+#             'fg': 'red',
+#         },
+#         'django.server': {
+#             '()': 'django.utils.log.ServerFormatter',
+#             'format': '[%(server_time)s] %(message)s',
+#         },
+#     },
+#     'handlers': {
+#         'null': {
+#             'level': 'DEBUG',
+#             'class': 'logging.NullHandler',
+#         },
+#         'console': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'standard',
+#         },
+#         'console.red': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'red',
+#         },
+#         'django.server': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'django.server',
+#         }
+#     },
+#     'loggers': {
+#         'django': {
+#             'level': 'WARN',
+#             'handlers': ['console'],
+#             'propagate': False,
+#         },
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['console'],
+#             'propagate': False,
+#         },
+#         'django.server': {
+#             'level': 'INFO',
+#             'propagate': False,
+#             'handlers': ['django.server'],
+#         },
+#         '': {
+#             'level': 'INFO',
+#             'handlers': ['console'],
+#         },
+#     }
+# }

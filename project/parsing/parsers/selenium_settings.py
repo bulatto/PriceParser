@@ -3,7 +3,7 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 
 from config.settings.base import BASE_DIR
-from config.settings.base import LOGS_DIR
+from config.settings.base import LOG_PATH
 
 from .enum import SeleniumProgramEnum
 from .settings import parser_settings
@@ -21,7 +21,7 @@ SELENIUM_VISIBLE = bool(selenium_section.getboolean('VISIBLE'))
 
 
 # Путь до логов парсера Selenium
-SELENIUM_LOGS_FILE = os.path.join(LOGS_DIR, 'selenium.log')
+SELENIUM_LOGS_FILE = os.path.join(LOG_PATH, 'selenium.log')
 
 
 # Выбор программы для Selenium парсера

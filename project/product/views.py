@@ -1,3 +1,5 @@
+import logging
+
 from collections import namedtuple
 
 from django.db.models import BooleanField
@@ -21,6 +23,9 @@ from .helpers import convert_price_to_string
 from .helpers import delete_site
 from .helpers import get_photo_path
 from .models import Product
+
+
+logger = logging.getLogger(__name__)
 
 
 class ShowGoodsView(View):
@@ -147,7 +152,7 @@ class ShowGoodsView(View):
 
     def dispatch(self, request, *args, **kwargs):
         """Основная функция View"""
-
+        logger.info('Происходит просмотр вьюшки')
         # Применение фильтрации
         products_query = self._apply_filtering(self.queryset, request)
 
